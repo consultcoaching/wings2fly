@@ -2,6 +2,7 @@
 // POST /api/mollie/webhook
 // Vertrouwt alleen de id. Haalt status zelf op bij Mollie.
 // Idempotent via SQLite. Alleen paid + €49,00 zet Reset.
+// Race: INSERT OR IGNORE, tweede aanroep is no-op.
 
 const Database = require("better-sqlite3");
 
@@ -35,8 +36,13 @@ async function webhook(req, res) {
   if (!key) return res.status(500).send("geen sleutel");
 
   const db = openDb();
-  const alGezien = db.prepare("SELECT 1 FROM webhook_log WHERE payment_id = ?").get(id);
-  if (alGezien) {
+  const nu = new Date().toISOString();
+
+  const info = db.prepare(
+    "INSERT OR IGNORE INTO webhook_log (payment_id, status, received_at) VALUES (?, 'pending', ?)"
+  ).run(id, nu);
+
+  if (info.changes === 0) {
     db.close();
     return res.status(200).send("al verwerkt");
   }
@@ -45,17 +51,13 @@ async function webhook(req, res) {
     headers: { Authorization: `Bearer ${key}` }
   });
   if (!check.ok) {
+    db.prepare("UPDATE webhook_log SET status = 'mollie_fout' WHERE payment_id = ?").run(id);
     db.close();
     return res.status(502).send("mollie niet bereikbaar");
   }
   const betaling = await check.json();
 
-  const nu = new Date().toISOString();
-  db.prepare("INSERT INTO webhook_log (payment_id, status, received_at) VALUES (?, ?, ?)").run(
-    id,
-    betaling.status,
-    nu
-  );
+  db.prepare("UPDATE webhook_log SET status = ? WHERE payment_id = ?").run(betaling.status, id);
 
   if (betaling.status !== "paid") {
     db.close();
