@@ -4,11 +4,11 @@ Versie 0.1 (concept) · ingangsdatum [[DATUM]]
 
 ## 1. Wie wij zijn
 
-LeefNu wordt aangeboden door [[BEDRIJFSNAAM]] ([[RECHTSVORM]]), met zetel te [[ADRES]],
-ondernemingsnummer [[KBO]], btw-nummer [[BTW]].
+LeefNu wordt aangeboden door Johnny Smets (eenmanszaak, handelend als Consult Coaching / Wings2Fly.AI), met zetel te Commandant Leroystraat 27, 3950 Bocholt, België,
+ondernemingsnummer 0534.767.334, btw-nummer BE 0534.767.334.
 Contact: [[EMAIL]] · [[TELEFOON]] · https://leefnu.app
 
-In deze voorwaarden: "wij" is [[BEDRIJFSNAAM]], "je" is de gebruiker, "de app" is LeefNu op
+In deze voorwaarden: "wij" is Johnny Smets, "je" is de gebruiker, "de app" is LeefNu op
 https://leefnu.app en als geïnstalleerde web-app (PWA).
 
 ## 2. Wat LeefNu is, en wat het niet is
@@ -16,8 +16,13 @@ https://leefnu.app en als geïnstalleerde web-app (PWA).
 LeefNu is een zelfhulp-app met ademhalingsoefeningen, grounding, een lokaal dagboek en een
 noodscherm met hulplijnen. De app ondersteunt je bij het kalmeren en bij het vinden van hulp.
 
-LeefNu is **geen** medisch hulpmiddel, geen therapie, geen diagnose en geen vervanging van
-een arts, psycholoog of hulplijn. De app stelt geen diagnoses en geeft geen behandeladvies.
+LeefNu is een hulpmiddel voor zelfzorg, **geen** therapie en geen medisch hulpmiddel. De app
+vervangt geen arts, psycholoog of therapeut, stelt geen diagnoses, geeft geen behandeladvies en
+belooft geen genezing en geen gegarandeerd resultaat.
+
+Heb je een hart- of longaandoening, raadpleeg dan eerst een arts voordat je ademoefeningen
+doet. Doe geen oefeningen met verlengde uitademing bij paniek of tijdens een zwangerschap;
+kies dan een oefening met gelijke in- en uitademing, of de grounding-oefening.
 
 **In een noodsituatie bel je altijd eerst een hulplijn**: 112 (noodnummer), 1813
 (Zelfmoordlijn, Vlaanderen), 113 of 0800 0113 (Zelfmoordpreventie, vanuit Nederland),
@@ -132,7 +137,7 @@ gegevens weg en kunnen wij ze niet terughalen.
 
 ## 11. Intellectuele eigendom
 
-De app, de teksten, de oefeningen, het logo en de code zijn van [[BEDRIJFSNAAM]] of haar
+De app, de teksten, de oefeningen, het logo en de code zijn van Johnny Smets of haar
 licentiegevers. Je krijgt een persoonlijk, niet-overdraagbaar gebruiksrecht voor de duur van
 je toegang. Je eigen dagboeknotities blijven van jou.
 
@@ -144,7 +149,7 @@ je toegang. Je eigen dagboeknotities blijven van jou.
   is voor ons vrijwillig, tenzij de wet anders bepaalt.
 - Op deze voorwaarden is het Belgisch recht van toepassing. Geschillen worden voorgelegd aan
   de bevoegde rechtbank van je woonplaats als je consument bent in België, en anders aan de
-  rechtbanken van het arrondissement van onze zetel.
+  rechtbanken die bevoegd zijn voor onze zetel in Bocholt.
 
 ## 13. Slot
 

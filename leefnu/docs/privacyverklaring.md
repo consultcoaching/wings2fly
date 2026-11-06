@@ -7,7 +7,7 @@ zijn. Ze geldt voor https://leefnu.app en de geïnstalleerde web-app.
 
 ## 1. Verwerkingsverantwoordelijke
 
-[[BEDRIJFSNAAM]], [[ADRES]], ondernemingsnummer [[KBO]].
+Johnny Smets, Commandant Leroystraat 27, 3950 Bocholt, België, ondernemingsnummer 0534.767.334.
 Vragen over privacy: [[EMAIL]].
 
 ## 2. Het uitgangspunt: alles wat over jou gaat, blijft op je toestel
@@ -32,15 +32,17 @@ sociale media. De browser praat alleen met leefnu.app (Content-Security-Policy
 |---|---|---|---|
 | e-mailadres | account, inlogcode, bevestiging van betaling, verplichte meldingen over je abonnement | uitvoering van de overeenkomst | tot [[BEWAARTERMIJN]] dagen na einde van je betaalde niveau |
 | naam | aanspreking in e-mails, factuur op verzoek | uitvoering van de overeenkomst | idem |
-| telefoonnummer | **[[DOEL TELEFOONNUMMER]]** | **[[GRONDSLAG]]** | idem |
+| telefoonnummer (optioneel) | accountherstel als je niet meer bij je e-mail kunt, en contact door LeefNu over je account; nooit sms-marketing | toestemming, apart aangevinkt bij registratie; intrekbaar via [[EMAIL]] | idem |
 | betaalstatus (niveau, einddatum, Mollie-betaal-ID) | toegang tot het betaalde niveau, terugbetalingen, bewijs bij geschil | uitvoering van de overeenkomst; wettelijke plicht (boekhouding) | niveau en einddatum: tot [[BEWAARTERMIJN]] dagen na einde; betaalgegevens voor de boekhouding: 7 jaar |
-| inlogcode | aanmelden | uitvoering van de overeenkomst | tot gebruik of vervaltijd, maximaal 24 uur |
+| inlogcode (per e-mail verstuurd via [[MAILDIENST]]) | aanmelden | uitvoering van de overeenkomst | tot gebruik of vervaltijd, maximaal 24 uur |
 | serverlogboeken (IP-adres, tijdstip, opgevraagde pagina) | beveiliging, storingen | gerechtvaardigd belang (veilig houden van de dienst) | maximaal 14 dagen |
 | je berichten aan ons | je vraag of klacht beantwoorden | gerechtvaardigd belang / overeenkomst | tot 1 jaar na afhandeling |
 
-> **Beslispunt**: de live app vraagt een telefoonnummer bij registratie. Zolang er geen
-> concreet doel is, mag het niet gevraagd worden. Vul het doel in of schrap het veld in de app
-> en deze rij.
+> **Let op**: deze rij volgt het eigenaarsbesluit van 24 september 2026 (telefoon alleen
+> bewaren, doel accountherstel en contact, aparte opt-in, geen sms). "Crisisopvolging" stond
+> ook in dat besluit, maar pas na juridische en medische toets; het staat daarom **niet** in
+> deze verklaring. De live app vraagt het nummer nu nog verplicht en zonder aparte opt-in;
+> dat moet aangepast zijn vóór deze verklaring live gaat, of de rij vervalt.
 
 Wij nemen geen geautomatiseerde beslissingen over jou en bouwen geen profielen.
 
@@ -61,7 +63,7 @@ Gegevens verlaten de Europese Economische Ruimte niet.
 
 - Verbinding via HTTPS. Inloggen met een eenmalige code, geen wachtwoorden die kunnen lekken.
 - De server bewaart het minimum (§2). Wat niet op de server staat, kan daar ook niet lekken.
-- Toegang tot de server is beperkt tot [[BEDRIJFSNAAM]] en beveiligd met sleutels.
+- Toegang tot de server is beperkt tot Johnny Smets en beveiligd met sleutels.
 - Een datalek dat een risico voor jou inhoudt, melden we binnen 72 uur aan de
   Gegevensbeschermingsautoriteit en, bij hoog risico, aan jou.
 

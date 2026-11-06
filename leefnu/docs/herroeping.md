@@ -33,11 +33,13 @@ Eén van deze manieren volstaat. Een reden hoef je niet te geven.
    https://leefnu.app/herroepen en in de app onder Instellingen › Niveau. Je vult je
    e-mailadres en, als je het hebt, het betaal-ID in. Je krijgt onmiddellijk een bevestiging
    op het scherm en per e-mail, met datum en tijd van ontvangst. *(Deze knop bestaat nog niet
-   in de huidige versie; tot dan geldt manier 2. Zie `docs/README.md` punt 4.)*
+   in de huidige versie; tot dan geldt manier 2. Verplicht in België sinds 14 augustus 2026
+   volgens het eigen wetsdossier van 7 oktober, WER VI.61/2; te verifiëren. Zie
+   `docs/README.md` punt 4.)*
 2. **Per e-mail** aan [[EMAIL]], met een duidelijke verklaring dat je herroept. Je mag het
    modelformulier hieronder gebruiken, maar dat hoeft niet. Wij bevestigen de ontvangst per
    e-mail.
-3. **Per brief** aan [[BEDRIJFSNAAM]], [[ADRES]].
+3. **Per brief** aan Johnny Smets, Commandant Leroystraat 27, 3950 Bocholt, België.
 
 Je herroept op tijd als je je bericht verstuurt vóór het einde van de 14 dagen.
 
@@ -55,7 +57,7 @@ Kopieer dit in een e-mail aan [[EMAIL]] of in een brief. Alleen invullen en vers
 de overeenkomst wilt herroepen.
 
 ```
-Aan: [[BEDRIJFSNAAM]], [[ADRES]], [[EMAIL]]
+Aan: Johnny Smets, Commandant Leroystraat 27, 3950 Bocholt, België, [[EMAIL]]
 
 Ik deel u hierbij mede dat ik onze overeenkomst betreffende de levering van de volgende
 dienst herroep:

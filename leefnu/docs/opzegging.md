@@ -14,7 +14,7 @@ Kies één van deze manieren; alle drie zijn evenwaardig.
    manier 2.)*
 2. **Per e-mail** aan [[EMAIL]], vanaf het e-mailadres van je account, met als onderwerp
    "Opzegging". Een reden is niet nodig. Wij bevestigen binnen 3 werkdagen.
-3. **Per brief** aan [[BEDRIJFSNAAM]], [[ADRES]].
+3. **Per brief** aan Johnny Smets, Commandant Leroystraat 27, 3950 Bocholt, België.
 
 De datum waarop je bericht bij ons toekomt, is de opzegdatum.
 
