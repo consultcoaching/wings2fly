@@ -6,6 +6,7 @@ import Grounding from './screens/Grounding';
 import Dagboek from './screens/Dagboek';
 import Instellingen from './screens/Instellingen';
 import Privacy from './screens/Privacy';
+import Niveaus from './screens/Niveaus';
 import Crisis from './screens/Crisis';
 import { useLocalData } from './hooks/useLocalData';
 import { useOnline } from './hooks/useOnline';
@@ -19,7 +20,7 @@ const TABS = [
 
 export default function App() {
   const [tab, setTab] = useState('start');
-  const [subScreen, setSubScreen] = useState(null); // 'grounding' | 'dagboek' | 'privacy'
+  const [subScreen, setSubScreen] = useState(null); // 'grounding' | 'dagboek' | 'privacy' | 'niveaus'
   const [showCrisis, setShowCrisis] = useState(false);
   const [ademAutoStart, setAdemAutoStart] = useState(false);
   const [ademProtocol, setAdemProtocol] = useState(null);
@@ -97,6 +98,7 @@ export default function App() {
         return <Meer onProtocol={openProtocol} onOpen={setSubScreen} />;
       case 'instellingen':
         if (subScreen === 'privacy') return <Privacy onBack={backToList} />;
+        if (subScreen === 'niveaus') return <Niveaus onBack={backToList} />;
         return (
           <Instellingen
             data={data}
@@ -104,6 +106,7 @@ export default function App() {
             setSetting={setSetting}
             onClearAll={clearAll}
             onOpenPrivacy={() => setSubScreen('privacy')}
+            onOpenNiveaus={() => setSubScreen('niveaus')}
             saveFailed={saveFailed}
           />
         );

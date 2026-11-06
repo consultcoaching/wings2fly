@@ -191,6 +191,118 @@ main,
   text-align: center;
 }
 
+.btn.line {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.btn.line .line-nr {
+  font-size: 1.25rem;
+}
+
+.btn.line .line-info {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.line-list {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.line-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 14px;
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.line-item:active {
+  background: #182b45;
+}
+
+.line-item .line-nr {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  white-space: nowrap;
+  min-width: 5.5ch;
+}
+
+.line-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.line-name {
+  font-size: 0.9375rem;
+  line-height: 1.25;
+}
+
+.line-item .line-info {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* --- Niveaus -------------------------------------------------------- */
+
+.tier {
+  border-left: 4px solid var(--accent);
+}
+
+.tier-current {
+  border-color: var(--line-strong);
+}
+
+.tier-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tier-name {
+  font-size: 1.125rem;
+}
+
+.tier-price {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.tier-features {
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.tier-features li::before {
+  content: '· ';
+  color: var(--muted);
+}
+
+.tag-current {
+  background: var(--accent);
+  color: var(--bg);
+}
+
 .crisis-close {
   margin-top: 24px;
 }
@@ -243,7 +355,7 @@ main,
 
 .tag {
   display: inline-block;
-  margin-left: 8px;
+  margin-left: 0;
   padding: 2px 8px;
   border-radius: 999px;
   background: var(--line);
@@ -251,6 +363,10 @@ main,
   font-size: 0.75rem;
   font-weight: 600;
   vertical-align: middle;
+}
+
+.tag-inline {
+  margin-left: 8px;
 }
 
 /* --- Ademcirkel (Start) --------------------------------------------- */

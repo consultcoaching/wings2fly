@@ -191,6 +191,104 @@ const GROUNDING_STEPS = [
   { count: 1, sense: 'proeven', prompt: 'Benoem 1 ding dat je proeft.', hint: 'Of neem een slok water en let op de smaak.' },
 ];
 
+/* ============================== lib/tiers.js ============================== */
+/* Niveaus en features, overgenomen uit de live bundle (JSON van 2026-11-06).
+ * Runtime: currentTier() geeft altijd 'free' terug; betaalde niveaus tonen
+ * "Binnenkort". Een echte controle vereist een server-gekoppeld token.
+ * Gating hier is dus alleen functioneel voor Free-limieten, nooit beveiliging. */
+
+const TIERS = {
+  free: {
+    id: 'free',
+    naam: 'Free',
+    prijs: 'Gratis',
+    kleur: '#6DB89B',
+    features: ['basis', 'adem', 'grounding', 'crisis', 'spraak', 'dagboek_7', 'acties_3', 'training_starter'],
+  },
+  reset: {
+    id: 'reset',
+    naam: 'Reset',
+    prijs: '€5/maand',
+    kleur: '#C8B87A',
+    features: [
+      'basis', 'adem', 'grounding', 'crisis', 'spraak', 'dagboek_7', 'acties_3', 'training_starter',
+      'dagboek_onbeperkt', 'acties_alle', 'context_extra', 'weekpatroon', 'export', 'training_alle',
+    ],
+  },
+  care: {
+    id: 'care',
+    naam: 'Care',
+    prijs: '€15/maand',
+    kleur: '#B07BD4',
+    features: [
+      'basis', 'adem', 'grounding', 'crisis', 'spraak', 'dagboek_7', 'acties_3', 'training_starter',
+      'dagboek_onbeperkt', 'acties_alle', 'context_extra', 'weekpatroon', 'export', 'training_alle',
+      'pdf', 'coach_export', 'mantelzorger',
+    ],
+  },
+};
+
+const TIER_ORDER = ['free', 'reset', 'care'];
+
+const FEATURE_LABELS = {
+  free: [
+    'Check-in · 8 staten',
+    'Ademhaling (4 protocollen)',
+    'Grounding (5-4-3-2-1)',
+    '3 micro-acties',
+    'Dagboek 7 entries',
+    'Crisisprotocol',
+    'Spraak (Piper · Vlaams)',
+    'Training Starter',
+  ],
+  reset: [
+    'Alles van Free',
+    'Alle micro-acties',
+    'Onbeperkt dagboek',
+    'Weekpatroon',
+    'JSON export',
+    'Personalisatie profiel',
+    'Context-acties',
+    'Training Alle niveaus',
+  ],
+  care: [
+    'Alles van Reset',
+    'PDF rapport voor coach',
+    'Coach-export',
+    'Mantelzorger-modus',
+    'Training Getraind',
+  ],
+};
+
+/** Aantal dagboeknotities dat Free bewaart (oudste vallen af). */
+const JOURNAL_LIMIT_FREE = 7;
+
+/** Spiegelt Nt() uit de live bundle: altijd free. */
+function currentTier() {
+  return 'free';
+}
+
+function hasFeature(feature, tier = currentTier()) {
+  return TIERS[tier]?.features.includes(feature) ?? false;
+}
+
+/** null = onbeperkt. */
+function journalLimit(tier = currentTier()) {
+  return hasFeature('dagboek_onbeperkt', tier) ? null : JOURNAL_LIMIT_FREE;
+}
+
+/* ============================== lib/crisisLines.js ============================== */
+/* Hulplijnen, overgenomen uit de live bundle. Volgorde = weergavevolgorde.
+ * primary: grote rode knop; de rest staat eronder als "andere lijnen". */
+const CRISIS_LINES = [
+  { naam: 'Zelfmoordlijn 1813 · Vlaanderen', nr: '1813', info: '24/7 · gratis · anoniem', primary: true },
+  { naam: 'Noodnummer · ziekenwagen en brandweer', nr: '112', info: 'altijd · gratis', primary: true },
+  { naam: '113 Zelfmoordpreventie · vanuit Nederland', nr: '113', info: '24/7 · gratis' },
+  { naam: '113 Zelfmoordpreventie · vanuit Nederland', nr: '0800 0113', info: 'gratis' },
+  { naam: 'Centre de Prévention du Suicide (FR)', nr: '0800 32 123', info: '24/7 · gratis' },
+  { naam: 'Tele-Onthaal · praten over wat je bezighoudt', nr: '106', info: '24/7 · gratis · anoniem' },
+];
+
 /* ============================== hooks/useLocalData.js ============================== */
 const DEFAULT_SETTINGS = {
   largeText: false,
@@ -240,13 +338,14 @@ function useLocalData() {
     [update]
   );
 
+  // Free bewaart de laatste 7 notities (dagboek_7); hogere niveaus tot MAX_JOURNAL.
   const addJournalEntry = useCallback(
     (entry) =>
       update((prev) => ({
         ...prev,
         journal: [{ id: newId(), at: new Date().toISOString(), ...entry }, ...prev.journal].slice(
           0,
-          MAX_JOURNAL
+          journalLimit() ?? MAX_JOURNAL
         ),
       })),
     [update]
@@ -435,6 +534,9 @@ function BreathRings({
 }
 
 /* ============================== screens/Crisis.jsx ============================== */
+const PRIMARY = CRISIS_LINES.filter((line) => line.primary);
+const OTHERS = CRISIS_LINES.filter((line) => !line.primary);
+
 /* Noodscherm. Belknoppen zijn echte <a href="tel:"> zodat ze zonder JS-state
  * en zonder netwerk werken. Escape sluit het scherm. Geen netwerkverkeer. */
 function Crisis({ onClose, onDirectBreathe, onOpenSettings, emergencyContact }) {
@@ -461,12 +563,17 @@ function Crisis({ onClose, onDirectBreathe, onOpenSettings, emergencyContact }) 
         Noodhulp
       </h2>
 
-      <a href="tel:112" className="btn danger" ref={firstActionRef}>
-        Bel 112
-      </a>
-      <a href="tel:1813" className="btn danger">
-        Bel 1813 (Zelfmoordlijn)
-      </a>
+      {PRIMARY.map((line, index) => (
+        <a
+          key={line.nr}
+          href={toTelHref(line.nr)}
+          className="btn danger line"
+          ref={index === 0 ? firstActionRef : undefined}
+        >
+          <span className="line-nr">Bel {line.nr}</span>
+          <span className="line-info">{line.naam}</span>
+        </a>
+      ))}
 
       {contactHref ? (
         <a href={contactHref} className="btn secondary">
@@ -484,6 +591,21 @@ function Crisis({ onClose, onDirectBreathe, onOpenSettings, emergencyContact }) 
           Start kalmerende adem
         </button>
       </div>
+
+      <h3 className="group-title">Andere lijnen</h3>
+      <ul className="line-list">
+        {OTHERS.map((line) => (
+          <li key={line.nr}>
+            <a href={toTelHref(line.nr)} className="line-item">
+              <span className="line-nr">{line.nr}</span>
+              <span className="line-text">
+                <span className="line-name">{line.naam}</span>
+                <span className="line-info">{line.info}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
 
       <button type="button" className="btn secondary crisis-close" onClick={onClose}>
         Sluiten
@@ -685,7 +807,7 @@ function Meer({ onProtocol, onOpen }) {
           ) : (
             <article key={tool.id} className="card card-muted" aria-disabled="true">
               <strong>
-                {tool.title} <span className="tag">Inhoud volgt</span>
+                {tool.title} <span className="tag tag-inline">Inhoud volgt</span>
               </strong>
               <p className="card-desc">{tool.desc}</p>
             </article>
@@ -849,6 +971,12 @@ function Dagboek({ entries, onAdd, onRemove, onBack }) {
 
       <section className="section-group" aria-labelledby="h-entries">
         <h3 id="h-entries">Eerdere notities ({entries.length})</h3>
+        {journalLimit() && (
+          <p className="hint left">
+            Free bewaart je laatste {journalLimit()} notities; oudere vallen af. Maak een backup via
+            Instellingen als je ze wilt bewaren.
+          </p>
+        )}
         {entries.length === 0 && <p className="hint left">Nog geen notities.</p>}
         <ul className="entry-list">
           {entries.map((entry) => (
@@ -925,6 +1053,53 @@ function Privacy({ onBack }) {
   );
 }
 
+/* ============================== screens/Niveaus.jsx ============================== */
+/* Overzicht Free / Reset / Care. Alleen weergave: betaalde niveaus zijn nog
+ * niet activeerbaar en tonen "Binnenkort", zoals in de live bundle. */
+function Niveaus({ onBack }) {
+  const current = currentTier();
+
+  return (
+    <main className="niveaus">
+      <button type="button" className="back" onClick={onBack}>
+        ‹ Terug
+      </button>
+      <h2 className="screen-title">Niveaus</h2>
+      <p className="hint left">
+        Noodhulp, ademhaling en grounding zijn altijd gratis. Betaalde niveaus komen later.
+      </p>
+
+      <div className="card-grid">
+        {TIER_ORDER.map((id) => {
+          const tier = TIERS[id];
+          const isCurrent = id === current;
+          return (
+            <article
+              key={id}
+              className={`card tier ${isCurrent ? 'tier-current' : ''}`}
+              style={{ borderLeftColor: tier.kleur }}
+              aria-current={isCurrent ? 'true' : undefined}
+            >
+              <div className="tier-head">
+                <strong className="tier-name">{tier.naam}</strong>
+                <span className="tier-price">{tier.prijs}</span>
+              </div>
+              <ul className="tier-features">
+                {FEATURE_LABELS[id].map((label) => (
+                  <li key={label}>{label}</li>
+                ))}
+              </ul>
+              <span className={`tag ${isCurrent ? 'tag-current' : ''}`}>
+                {isCurrent ? 'Huidig niveau' : 'Binnenkort'}
+              </span>
+            </article>
+          );
+        })}
+      </div>
+    </main>
+  );
+}
+
 /* ============================== screens/Instellingen.jsx ============================== */
 const CONFIRM_WINDOW_MS = 5000;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -941,8 +1116,10 @@ function Instellingen({
   setSetting,
   onClearAll,
   onOpenPrivacy,
+  onOpenNiveaus,
   saveFailed,
 }) {
+  const tier = TIERS[currentTier()];
   const [draftContact, setDraftContact] = useState(settings.emergencyContact || '');
   const [contactStatus, setContactStatus] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
@@ -999,6 +1176,16 @@ function Instellingen({
           sluiten.
         </p>
       )}
+
+      <section className="section-group" aria-labelledby="h-niveau">
+        <h3 id="h-niveau">Niveau</h3>
+        <p className="body">
+          Je gebruikt <strong style={{ color: tier.kleur }}>{tier.naam}</strong> ({tier.prijs}).
+        </p>
+        <button type="button" className="btn secondary" onClick={onOpenNiveaus}>
+          Bekijk niveaus
+        </button>
+      </section>
 
       <section className="section-group" aria-labelledby="h-data">
         <h3 id="h-data">Lokale gegevens</h3>
@@ -1125,7 +1312,7 @@ const TABS = [
 
 export default function App() {
   const [tab, setTab] = useState('start');
-  const [subScreen, setSubScreen] = useState(null); // 'grounding' | 'dagboek' | 'privacy'
+  const [subScreen, setSubScreen] = useState(null); // 'grounding' | 'dagboek' | 'privacy' | 'niveaus'
   const [showCrisis, setShowCrisis] = useState(false);
   const [ademAutoStart, setAdemAutoStart] = useState(false);
   const [ademProtocol, setAdemProtocol] = useState(null);
@@ -1203,6 +1390,7 @@ export default function App() {
         return <Meer onProtocol={openProtocol} onOpen={setSubScreen} />;
       case 'instellingen':
         if (subScreen === 'privacy') return <Privacy onBack={backToList} />;
+        if (subScreen === 'niveaus') return <Niveaus onBack={backToList} />;
         return (
           <Instellingen
             data={data}
@@ -1210,6 +1398,7 @@ export default function App() {
             setSetting={setSetting}
             onClearAll={clearAll}
             onOpenPrivacy={() => setSubScreen('privacy')}
+            onOpenNiveaus={() => setSubScreen('niveaus')}
             saveFailed={saveFailed}
           />
         );
@@ -1461,6 +1650,118 @@ main,
   text-align: center;
 }
 
+.btn.line {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.btn.line .line-nr {
+  font-size: 1.25rem;
+}
+
+.btn.line .line-info {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  opacity: 0.9;
+}
+
+.line-list {
+  list-style: none;
+  display: grid;
+  gap: 8px;
+  max-width: 320px;
+  margin: 0 auto;
+}
+
+.line-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 56px;
+  padding: 10px 14px;
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  color: var(--text);
+  text-decoration: none;
+}
+
+.line-item:active {
+  background: #182b45;
+}
+
+.line-item .line-nr {
+  flex-shrink: 0;
+  font-weight: 700;
+  font-size: 1.0625rem;
+  white-space: nowrap;
+  min-width: 5.5ch;
+}
+
+.line-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.line-name {
+  font-size: 0.9375rem;
+  line-height: 1.25;
+}
+
+.line-item .line-info {
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+
+/* --- Niveaus -------------------------------------------------------- */
+
+.tier {
+  border-left: 4px solid var(--accent);
+}
+
+.tier-current {
+  border-color: var(--line-strong);
+}
+
+.tier-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.tier-name {
+  font-size: 1.125rem;
+}
+
+.tier-price {
+  color: var(--muted);
+  font-size: 0.9375rem;
+}
+
+.tier-features {
+  list-style: none;
+  display: grid;
+  gap: 4px;
+  margin-bottom: 12px;
+  font-size: 0.9375rem;
+  line-height: 1.35;
+}
+
+.tier-features li::before {
+  content: '· ';
+  color: var(--muted);
+}
+
+.tag-current {
+  background: var(--accent);
+  color: var(--bg);
+}
+
 .crisis-close {
   margin-top: 24px;
 }
@@ -1513,7 +1814,7 @@ main,
 
 .tag {
   display: inline-block;
-  margin-left: 8px;
+  margin-left: 0;
   padding: 2px 8px;
   border-radius: 999px;
   background: var(--line);
@@ -1521,6 +1822,10 @@ main,
   font-size: 0.75rem;
   font-weight: 600;
   vertical-align: middle;
+}
+
+.tag-inline {
+  margin-left: 8px;
 }
 
 /* --- Ademcirkel (Start) --------------------------------------------- */

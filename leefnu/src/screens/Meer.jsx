@@ -36,7 +36,7 @@ export default function Meer({ onProtocol, onOpen }) {
           ) : (
             <article key={tool.id} className="card card-muted" aria-disabled="true">
               <strong>
-                {tool.title} <span className="tag">Inhoud volgt</span>
+                {tool.title} <span className="tag tag-inline">Inhoud volgt</span>
               </strong>
               <p className="card-desc">{tool.desc}</p>
             </article>

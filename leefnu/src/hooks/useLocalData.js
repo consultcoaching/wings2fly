@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { EMPTY_LOCAL, clearLocal, loadLocal, saveLocal } from '../lib/storage';
 import { MAX_JOURNAL, MAX_SESSIONS } from '../lib/config';
+import { journalLimit } from '../lib/tiers';
 
 export const DEFAULT_SETTINGS = {
   largeText: false,
@@ -50,13 +51,14 @@ export function useLocalData() {
     [update]
   );
 
+  // Free bewaart de laatste 7 notities (dagboek_7); hogere niveaus tot MAX_JOURNAL.
   const addJournalEntry = useCallback(
     (entry) =>
       update((prev) => ({
         ...prev,
         journal: [{ id: newId(), at: new Date().toISOString(), ...entry }, ...prev.journal].slice(
           0,
-          MAX_JOURNAL
+          journalLimit() ?? MAX_JOURNAL
         ),
       })),
     [update]

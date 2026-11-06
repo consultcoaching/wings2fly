@@ -1,5 +1,9 @@
 import { useEffect, useRef } from 'react';
 import { toTelHref } from '../lib/storage';
+import { CRISIS_LINES } from '../lib/crisisLines';
+
+const PRIMARY = CRISIS_LINES.filter((line) => line.primary);
+const OTHERS = CRISIS_LINES.filter((line) => !line.primary);
 
 /* Noodscherm. Belknoppen zijn echte <a href="tel:"> zodat ze zonder JS-state
  * en zonder netwerk werken. Escape sluit het scherm. Geen netwerkverkeer. */
@@ -27,12 +31,17 @@ export default function Crisis({ onClose, onDirectBreathe, onOpenSettings, emerg
         Noodhulp
       </h2>
 
-      <a href="tel:112" className="btn danger" ref={firstActionRef}>
-        Bel 112
-      </a>
-      <a href="tel:1813" className="btn danger">
-        Bel 1813 (Zelfmoordlijn)
-      </a>
+      {PRIMARY.map((line, index) => (
+        <a
+          key={line.nr}
+          href={toTelHref(line.nr)}
+          className="btn danger line"
+          ref={index === 0 ? firstActionRef : undefined}
+        >
+          <span className="line-nr">Bel {line.nr}</span>
+          <span className="line-info">{line.naam}</span>
+        </a>
+      ))}
 
       {contactHref ? (
         <a href={contactHref} className="btn secondary">
@@ -50,6 +59,21 @@ export default function Crisis({ onClose, onDirectBreathe, onOpenSettings, emerg
           Start kalmerende adem
         </button>
       </div>
+
+      <h3 className="group-title">Andere lijnen</h3>
+      <ul className="line-list">
+        {OTHERS.map((line) => (
+          <li key={line.nr}>
+            <a href={toTelHref(line.nr)} className="line-item">
+              <span className="line-nr">{line.nr}</span>
+              <span className="line-text">
+                <span className="line-name">{line.naam}</span>
+                <span className="line-info">{line.info}</span>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ul>
 
       <button type="button" className="btn secondary crisis-close" onClick={onClose}>
         Sluiten

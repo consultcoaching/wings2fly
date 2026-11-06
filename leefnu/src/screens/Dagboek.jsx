@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { journalLimit } from '../lib/tiers';
 
 const MOODS = [
   { value: 1, label: 'Heel slecht' },
@@ -104,6 +105,12 @@ export default function Dagboek({ entries, onAdd, onRemove, onBack }) {
 
       <section className="section-group" aria-labelledby="h-entries">
         <h3 id="h-entries">Eerdere notities ({entries.length})</h3>
+        {journalLimit() && (
+          <p className="hint left">
+            Free bewaart je laatste {journalLimit()} notities; oudere vallen af. Maak een backup via
+            Instellingen als je ze wilt bewaren.
+          </p>
+        )}
         {entries.length === 0 && <p className="hint left">Nog geen notities.</p>}
         <ul className="entry-list">
           {entries.map((entry) => (

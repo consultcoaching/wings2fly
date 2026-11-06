@@ -19,6 +19,8 @@ const ORDER = [
   'lib/storage.js',
   'lib/protocols.js',
   'lib/grounding.js',
+  'lib/tiers.js',
+  'lib/crisisLines.js',
   'hooks/useLocalData.js',
   'hooks/useOnline.js',
   'hooks/useBreathing.js',
@@ -30,6 +32,7 @@ const ORDER = [
   'screens/Grounding.jsx',
   'screens/Dagboek.jsx',
   'screens/Privacy.jsx',
+  'screens/Niveaus.jsx',
   'screens/Instellingen.jsx',
   'App.jsx',
 ];
