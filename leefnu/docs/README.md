@@ -21,18 +21,22 @@ controle door een jurist en publicatie op de site.
 | Ondernemingsnummer | 0534.767.334 | KBO, actief sinds 05-12-2018 |
 | Btw | BE 0534.767.334, btw-plichtig | KBO (onderworpen sinds 05-12-2018); consumentenprijzen dus incl. 21 % btw |
 | Adres | Commandant Leroystraat 27, 3950 Bocholt | factuur W2F-008 (04-11-2025), offerte 08-10-2026, Academy-privacybeleid 21-09-2026 |
+| Contact-e-mail | johnny.smets@wings2fly.ai | besluit Johnny, 6 november 2026 (via sessie "LeefNu server audit"); ook het KBO-adres |
 
 ## Nog in te vullen
 
 | Veld | Opmerking |
 |---|---|
-| `[[EMAIL]]` | **KEUZE**: johnny.smets@wings2fly.ai (staat in het KBO) of johnny.smets@leefnu.app (bestaat als Combell-mailbox, maar "wordt niet extern gebruikt" volgens verslag 26-09). Eén adres voor klanten én privacyvragen volstaat. |
 | `[[TELEFOON]]` | **KEUZE**: +32 484 24 44 18 staat publiek in het KBO; wettelijk volstaat e-mail. Niet publiceren = regel schrappen. |
 | `[[HOSTINGLOCATIE]]` | land van het Hetzner-datacenter van 178.105.122.1 (Duitsland of Finland); te lezen in het Hetzner-paneel |
 | `[[MAILDIENST]]` | wie verstuurt de inlogcodes (OTP-mails)? Niet gevonden. Die dienst is een verwerker en hoort in privacy §4. |
 | `[[BEWAARTERMIJN]]` | dagen na einde niveau tot verwijdering accountgegevens; voorstel 30 |
 | `[[LEEFTIJD]]` | minimumleeftijd betaalde plannen; nergens vastgelegd, voorstel 18 |
 | `[[DATUM]]` | ingangsdatum |
+
+Let op: johnny.smets@wings2fly.ai is een Wings2Fly-adres op LeefNu-pagina's. Dat is toegestaan
+zolang de exploitant (§1 voorwaarden) dezelfde eenmanszaak is; het bevestigt wel het beeld
+dat LeefNu onder Wings2Fly.AI valt. Verandert dat later, dan ook dit adres.
 
 Zoek op `[[` voordat iets live gaat; er mag er geen één overblijven.
 

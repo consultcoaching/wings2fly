@@ -36,7 +36,7 @@ Eén van deze manieren volstaat. Een reden hoef je niet te geven.
    in de huidige versie; tot dan geldt manier 2. Verplicht in België sinds 14 augustus 2026
    volgens het eigen wetsdossier van 7 oktober, WER VI.61/2; te verifiëren. Zie
    `docs/README.md` punt 4.)*
-2. **Per e-mail** aan [[EMAIL]], met een duidelijke verklaring dat je herroept. Je mag het
+2. **Per e-mail** aan johnny.smets@wings2fly.ai, met een duidelijke verklaring dat je herroept. Je mag het
    modelformulier hieronder gebruiken, maar dat hoeft niet. Wij bevestigen de ontvangst per
    e-mail.
 3. **Per brief** aan Johnny Smets, Commandant Leroystraat 27, 3950 Bocholt, België.
@@ -53,11 +53,11 @@ Je herroept op tijd als je je bericht verstuurt vóór het einde van de 14 dagen
 
 ## 5. Modelformulier voor herroeping
 
-Kopieer dit in een e-mail aan [[EMAIL]] of in een brief. Alleen invullen en versturen als je
+Kopieer dit in een e-mail aan johnny.smets@wings2fly.ai of in een brief. Alleen invullen en versturen als je
 de overeenkomst wilt herroepen.
 
 ```
-Aan: Johnny Smets, Commandant Leroystraat 27, 3950 Bocholt, België, [[EMAIL]]
+Aan: Johnny Smets, Commandant Leroystraat 27, 3950 Bocholt, België, johnny.smets@wings2fly.ai
 
 Ik deel u hierbij mede dat ik onze overeenkomst betreffende de levering van de volgende
 dienst herroep:

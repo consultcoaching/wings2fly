@@ -8,7 +8,7 @@ zijn. Ze geldt voor https://leefnu.app en de geïnstalleerde web-app.
 ## 1. Verwerkingsverantwoordelijke
 
 Johnny Smets, Commandant Leroystraat 27, 3950 Bocholt, België, ondernemingsnummer 0534.767.334.
-Vragen over privacy: [[EMAIL]].
+Vragen over privacy: johnny.smets@wings2fly.ai.
 
 ## 2. Het uitgangspunt: alles wat over jou gaat, blijft op je toestel
 
@@ -32,7 +32,7 @@ sociale media. De browser praat alleen met leefnu.app (Content-Security-Policy
 |---|---|---|---|
 | e-mailadres | account, inlogcode, bevestiging van betaling, verplichte meldingen over je abonnement | uitvoering van de overeenkomst | tot [[BEWAARTERMIJN]] dagen na einde van je betaalde niveau |
 | naam | aanspreking in e-mails, factuur op verzoek | uitvoering van de overeenkomst | idem |
-| telefoonnummer (optioneel) | accountherstel als je niet meer bij je e-mail kunt, en contact door LeefNu over je account; nooit sms-marketing | toestemming, apart aangevinkt bij registratie; intrekbaar via [[EMAIL]] | idem |
+| telefoonnummer (optioneel) | accountherstel als je niet meer bij je e-mail kunt, en contact door LeefNu over je account; nooit sms-marketing | toestemming, apart aangevinkt bij registratie; intrekbaar via johnny.smets@wings2fly.ai | idem |
 | betaalstatus (niveau, einddatum, Mollie-betaal-ID) | toegang tot het betaalde niveau, terugbetalingen, bewijs bij geschil | uitvoering van de overeenkomst; wettelijke plicht (boekhouding) | niveau en einddatum: tot [[BEWAARTERMIJN]] dagen na einde; betaalgegevens voor de boekhouding: 7 jaar |
 | inlogcode (per e-mail verstuurd via [[MAILDIENST]]) | aanmelden | uitvoering van de overeenkomst | tot gebruik of vervaltijd, maximaal 24 uur |
 | serverlogboeken (IP-adres, tijdstip, opgevraagde pagina) | beveiliging, storingen | gerechtvaardigd belang (veilig houden van de dienst) | maximaal 14 dagen |
@@ -70,7 +70,7 @@ Gegevens verlaten de Europese Economische Ruimte niet.
 ## 6. Je rechten
 
 Je hebt recht op inzage, verbetering, verwijdering, beperking, overdraagbaarheid en bezwaar.
-Een verzoek stuur je naar [[EMAIL]]; we antwoorden binnen een maand. Om te vermijden dat
+Een verzoek stuur je naar johnny.smets@wings2fly.ai; we antwoorden binnen een maand. Om te vermijden dat
 iemand anders zich voor jou uitgeeft, sturen we een bevestigingscode naar het e-mailadres van
 je account.
 
@@ -83,7 +83,7 @@ Drukpersstraat 35, 1000 Brussel, https://www.gegevensbeschermingsautoriteit.be.
 Dat kunnen wij niet voor je doen en ook niet ongedaan maken. Maak eerst een export als je
 iets wilt bewaren.
 
-**Op onze server**: stuur een verzoek naar [[EMAIL]] of zeg je niveau op (zie *Opzegging*).
+**Op onze server**: stuur een verzoek naar johnny.smets@wings2fly.ai of zeg je niveau op (zie *Opzegging*).
 Wij verwijderen je e-mailadres, naam en telefoonnummer binnen [[BEWAARTERMIJN]] dagen na het
 einde van je betaalde niveau. Betaalgegevens die we voor de boekhouding moeten bewaren,
 anonimiseren we: ze zijn dan niet meer aan jou te koppelen.

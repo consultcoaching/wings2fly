@@ -6,7 +6,7 @@ Versie 0.1 (concept) · ingangsdatum [[DATUM]]
 
 LeefNu wordt aangeboden door Johnny Smets (eenmanszaak, handelend als Consult Coaching / Wings2Fly.AI), met zetel te Commandant Leroystraat 27, 3950 Bocholt, België,
 ondernemingsnummer 0534.767.334, btw-nummer BE 0534.767.334.
-Contact: [[EMAIL]] · [[TELEFOON]] · https://leefnu.app
+Contact: johnny.smets@wings2fly.ai · [[TELEFOON]] · https://leefnu.app
 
 In deze voorwaarden: "wij" is Johnny Smets, "je" is de gebruiker, "de app" is LeefNu op
 https://leefnu.app en als geïnstalleerde web-app (PWA).
@@ -82,7 +82,7 @@ terug.
   betaalpagina. Wij zien geen kaart- of rekeninggegevens; die verwerkt Mollie.
 - Je toegang wordt geactiveerd zodra Mollie de betaling aan ons bevestigt. Bij een
   overschrijving kan dat één tot drie werkdagen duren.
-- Je ontvangt een bevestiging per e-mail. Een factuur vraag je aan via [[EMAIL]].
+- Je ontvangt een bevestiging per e-mail. Een factuur vraag je aan via johnny.smets@wings2fly.ai.
 - Mislukt een betaling of wordt ze teruggedraaid, dan vervalt het betaalde niveau en val je
   terug op Free. Je lokale gegevens blijven op je toestel.
 
@@ -97,7 +97,7 @@ met een modelformulier en de online herroepingsfunctie.
 
 Zie *Opzegging* (https://leefnu.app/opzeggen). Kort: een maandabonnement zeg je op elk moment
 op tegen het einde van de lopende maand; een eenmalige periode van 12 maanden stopt vanzelf.
-Opzeggen kan via de app of per e-mail aan [[EMAIL]] en kost niets.
+Opzeggen kan via de app of per e-mail aan johnny.smets@wings2fly.ai en kost niets.
 
 ## 8. Jouw gegevens
 
@@ -143,7 +143,7 @@ je toegang. Je eigen dagboeknotities blijven van jou.
 
 ## 12. Klachten en geschillen
 
-- Een klacht stuur je naar [[EMAIL]]. We antwoorden binnen 14 dagen.
+- Een klacht stuur je naar johnny.smets@wings2fly.ai. We antwoorden binnen 14 dagen.
 - Komen we er samen niet uit, dan kun je als consument terecht bij de Consumentenombudsdienst
   (https://consumentenombudsdienst.be). Deelname aan buitengerechtelijke geschillenbeslechting
   is voor ons vrijwillig, tenzij de wet anders bepaalt.

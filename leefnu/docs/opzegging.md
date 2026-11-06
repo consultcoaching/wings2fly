@@ -12,7 +12,7 @@ Kies één van deze manieren; alle drie zijn evenwaardig.
 1. **In de app**: Instellingen › Niveau › Opzeggen. Je krijgt meteen een bevestiging op het
    scherm en per e-mail. *(Deze knop bestaat nog niet in de huidige versie; tot dan geldt
    manier 2.)*
-2. **Per e-mail** aan [[EMAIL]], vanaf het e-mailadres van je account, met als onderwerp
+2. **Per e-mail** aan johnny.smets@wings2fly.ai, vanaf het e-mailadres van je account, met als onderwerp
    "Opzegging". Een reden is niet nodig. Wij bevestigen binnen 3 werkdagen.
 3. **Per brief** aan Johnny Smets, Commandant Leroystraat 27, 3950 Bocholt, België.
 
