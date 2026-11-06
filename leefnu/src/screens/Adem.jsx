@@ -1,16 +1,16 @@
-import { useCallback, useEffect, useState } from 'react';
-import { DEFAULT_PROTOCOL, PHASES, PROTOCOLS } from '../lib/protocols';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { DEFAULT_PROTOCOL, PHASES, PROTOCOLS, isProtocolKey } from '../lib/protocols';
+import { MIN_SESSION_SECONDS } from '../lib/config';
+import { canSpeak, canVibrate } from '../lib/device';
 import { useBreathing } from '../hooks/useBreathing';
-
-const canVibrate = () => typeof navigator !== 'undefined' && typeof navigator.vibrate === 'function';
-const canSpeak = () => typeof window !== 'undefined' && 'speechSynthesis' in window;
+import BreathRings from '../components/BreathRings';
 
 function speak(text) {
   if (!canSpeak()) return;
   try {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'nl-NL';
+    utterance.lang = 'nl-BE';
     utterance.rate = 0.9;
     window.speechSynthesis.speak(utterance);
   } catch {
@@ -23,9 +23,15 @@ function stopFeedback() {
   if (canSpeak()) window.speechSynthesis.cancel();
 }
 
-export default function Adem({ settings, autoStart = false }) {
+export default function Adem({ settings, autoStart = false, initialProtocol, onProtocolChange, onSession }) {
+  const startKey = isProtocolKey(initialProtocol)
+    ? initialProtocol
+    : isProtocolKey(settings.lastProtocol)
+      ? settings.lastProtocol
+      : DEFAULT_PROTOCOL;
+
   const [running, setRunning] = useState(Boolean(autoStart));
-  const [protocolKey, setProtocolKey] = useState(DEFAULT_PROTOCOL);
+  const [protocolKey, setProtocolKey] = useState(startKey);
   const protocol = PROTOCOLS[protocolKey];
 
   const onPhase = useCallback(
@@ -36,7 +42,35 @@ export default function Adem({ settings, autoStart = false }) {
     [settings.haptics, settings.voice]
   );
 
-  const { phase, secondsLeft } = useBreathing({ protocol, running, onPhase });
+  const { phase, secondsLeft, phaseCount } = useBreathing({ protocol, running, onPhase });
+
+  // Sessie loggen (lokaal) bij stoppen of verlaten van het scherm.
+  const startedAtRef = useRef(null);
+  const protocolRef = useRef(protocolKey);
+  const onSessionRef = useRef(onSession);
+  protocolRef.current = protocolKey;
+  onSessionRef.current = onSession;
+
+  const flushSession = useCallback(() => {
+    const start = startedAtRef.current;
+    if (!start) return;
+    startedAtRef.current = null;
+    const seconds = Math.round((Date.now() - start) / 1000);
+    if (seconds >= MIN_SESSION_SECONDS) {
+      onSessionRef.current?.({
+        at: new Date(start).toISOString(),
+        protocol: protocolRef.current,
+        seconds,
+      });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (running) startedAtRef.current = Date.now();
+    else flushSession();
+  }, [running, flushSession]);
+
+  useEffect(() => () => flushSession(), [flushSession]);
 
   // Scherm op slot of tab naar de achtergrond: stoppen, zodat teller en
   // feedback nooit uit de pas lopen met wat de gebruiker ziet.
@@ -66,8 +100,10 @@ export default function Adem({ settings, autoStart = false }) {
         className="selector"
         value={protocolKey}
         onChange={(event) => {
+          const next = event.target.value;
           setRunning(false);
-          setProtocolKey(event.target.value);
+          setProtocolKey(next);
+          onProtocolChange?.(next);
         }}
       >
         {Object.entries(PROTOCOLS).map(([key, value]) => (
@@ -78,10 +114,15 @@ export default function Adem({ settings, autoStart = false }) {
       </select>
 
       <div className="circle-container">
-        <div className={`circle ${running ? phase : ''}`} aria-hidden="true">
-          <div className="circle-count">{running ? secondsLeft : 'Klaar'}</div>
-          {running && <div className="phase-text">{phaseLabel}</div>}
-        </div>
+        <BreathRings
+          running={running}
+          phase={phase}
+          secondsLeft={secondsLeft}
+          duration={protocol[phase]}
+          phaseCount={phaseCount}
+          reducedMotion={settings.reducedMotion}
+          label={phaseLabel}
+        />
         {/* Aparte live-region: één rustige melding per fasewissel, niet per seconde. */}
         <p className="sr-only" aria-live="polite" aria-atomic="true">
           {running ? `${phaseLabel}, ${protocol[phase]} seconden` : 'Oefening gestopt'}

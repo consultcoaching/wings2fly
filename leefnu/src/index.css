@@ -1,5 +1,17 @@
-/* LeefNu – standalone vanilla CSS. Lettergroottes in rem zodat
- * "Grote letters" (html.large-text) overal doorwerkt. */
+/* LeefNu – standalone vanilla CSS. Kleuren volgens specificatie §4.
+ * Lettergroottes in rem zodat "Grote tekst" (html.large-text) overal doorwerkt. */
+
+:root {
+  --bg: #1a2a4a;
+  --card: #132337;
+  --text: #ffffff;
+  --muted: #b0b0b0;
+  --sos: #d32f2f;
+  --sos-active: #b71c1c;
+  --accent: #64b5f6;
+  --line: #24395c;
+  --line-strong: #2f4a78;
+}
 
 * {
   box-sizing: border-box;
@@ -10,6 +22,7 @@
 
 html {
   font-size: 16px;
+  background: var(--bg);
 }
 
 html.large-text {
@@ -17,8 +30,8 @@ html.large-text {
 }
 
 body {
-  background: #000;
-  color: #fff;
+  background: var(--bg);
+  color: var(--text);
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   overflow-x: hidden;
   user-select: none;
@@ -27,12 +40,19 @@ body {
 
 button,
 input,
-select {
+select,
+textarea {
   font: inherit;
 }
 
+input,
+textarea {
+  user-select: text;
+  -webkit-user-select: text;
+}
+
 :focus-visible {
-  outline: 3px solid #64b5f6;
+  outline: 3px solid var(--accent);
   outline-offset: 3px;
 }
 
@@ -56,7 +76,32 @@ select {
   flex-direction: column;
 }
 
-/* --- SOS ------------------------------------------------------------ */
+/* --- Vaste elementen ------------------------------------------------ */
+
+.badge {
+  position: fixed;
+  top: calc(20px + env(safe-area-inset-top));
+  left: 16px;
+  z-index: 100;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.badge::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.badge.offline::before {
+  background: var(--muted);
+}
 
 .sos {
   position: fixed;
@@ -65,7 +110,7 @@ select {
   z-index: 100;
   min-width: 64px;
   min-height: 48px;
-  background: #d32f2f;
+  background: var(--sos);
   color: #fff;
   border: none;
   border-radius: 999px;
@@ -76,10 +121,8 @@ select {
 }
 
 .sos:active {
-  background: #b71c1c;
+  background: var(--sos-active);
 }
-
-/* --- Tabs ----------------------------------------------------------- */
 
 .tabs {
   position: fixed;
@@ -87,8 +130,8 @@ select {
   left: 0;
   right: 0;
   display: flex;
-  background: #111;
-  border-top: 1px solid #222;
+  background: var(--card);
+  border-top: 1px solid var(--line);
   padding-bottom: env(safe-area-inset-bottom);
   z-index: 90;
 }
@@ -98,7 +141,7 @@ select {
   min-height: 56px;
   padding: 16px 8px;
   background: none;
-  color: #888;
+  color: var(--muted);
   border: none;
   font-size: 0.875rem;
   font-weight: 600;
@@ -107,16 +150,13 @@ select {
 }
 
 .tabs button.active {
-  color: #fff;
+  color: var(--text);
 }
 
 /* --- Schermen ------------------------------------------------------- */
 
-.crisis,
-.adem,
-.start,
-.meer,
-.instellingen {
+main,
+.crisis {
   padding: calc(80px + env(safe-area-inset-top)) 20px calc(120px + env(safe-area-inset-bottom));
   max-width: 480px;
   margin: 0 auto;
@@ -124,12 +164,20 @@ select {
 }
 
 .crisis {
-  padding-top: calc(32px + env(safe-area-inset-top));
+  padding-top: calc(72px + env(safe-area-inset-top));
 }
 
 .screen-title {
   font-size: 1.5rem;
   margin-bottom: 16px;
+}
+
+.group-title {
+  font-size: 0.875rem;
+  color: var(--muted);
+  margin: 24px 0 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .crisis-title {
@@ -147,108 +195,195 @@ select {
   margin-top: 24px;
 }
 
-.badge {
-  position: absolute;
-  top: calc(16px + env(safe-area-inset-top));
-  left: 16px;
-  color: #666;
-  font-size: 0.8125rem;
-  font-weight: 500;
+.back {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 8px 0;
+  margin-bottom: 8px;
+  cursor: pointer;
+  min-height: 44px;
 }
 
 .hint {
   text-align: center;
-  color: #999;
+  color: var(--muted);
   font-size: 0.875rem;
   margin-top: 12px;
+  line-height: 1.4;
 }
 
-/* --- Ademcirkel ----------------------------------------------------- */
+.hint.left {
+  text-align: left;
+}
+
+.body {
+  color: var(--text);
+  font-size: 1rem;
+  line-height: 1.55;
+  margin-bottom: 12px;
+}
+
+.notice {
+  background: var(--card);
+  border: 1px solid var(--line-strong);
+  border-left: 4px solid var(--accent);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  font-size: 0.9375rem;
+  line-height: 1.4;
+}
+
+.notice.warn {
+  border-left-color: var(--sos);
+}
+
+.tag {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--line);
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+/* --- Ademcirkel (Start) --------------------------------------------- */
 
 .circle-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  margin: 40px auto 20px;
+  margin: 24px auto 20px;
 }
 
 .start-circle {
   margin-top: 60px;
 }
 
-.circle,
 .circle-btn {
   width: 220px;
   height: 220px;
-  border: 2px solid #fff;
+  border: 2px solid var(--text);
   border-radius: 50%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 1.375rem;
   font-weight: 600;
   background: transparent;
-  color: #fff;
+  color: var(--text);
   cursor: pointer;
-  transition: transform 0.4s ease, border-color 0.4s ease;
+  box-shadow: 0 0 0 12px rgba(100, 181, 246, 0.08), 0 0 0 24px rgba(100, 181, 246, 0.04);
 }
 
-.circle {
-  cursor: default;
+.circle-btn:active {
+  background: rgba(255, 255, 255, 0.06);
 }
 
-.circle-count {
-  font-size: 2rem;
+/* --- Multi-ring animatie (Adem) ------------------------------------- */
+
+.breath {
+  position: relative;
+  width: 260px;
+  height: 260px;
+}
+
+.breath-svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+  overflow: visible;
+}
+
+.breath-track {
+  stroke: var(--line-strong);
+}
+
+.breath-progress {
+  stroke: var(--accent);
+}
+
+.breath-rings circle {
+  stroke: var(--accent);
+}
+
+.breath-rings {
+  transform-origin: 50% 50%;
+  transform-box: fill-box;
+  transform: scale(0.85);
+  transition-property: transform;
+  transition-timing-function: ease-in-out;
+  transition-duration: 0.6s;
+}
+
+.breath.inhale .breath-rings,
+.breath.hold .breath-rings {
+  transform: scale(1);
+}
+
+.breath.exhale .breath-rings {
+  transform: scale(0.72);
+}
+
+.breath-center {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+}
+
+.breath-count {
+  font-size: 2.25rem;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
 }
 
-.circle.inhale {
-  transform: scale(1.25);
-  border-color: #64b5f6;
-}
-
-.circle.hold {
-  transform: scale(1.25);
-  border-color: #81c784;
-}
-
-.circle.exhale {
-  transform: scale(0.9);
-  border-color: #ffb74d;
-}
-
-.phase-text {
+.breath-phase {
   font-size: 0.875rem;
-  margin-top: 6px;
-  color: #ddd;
+  margin-top: 4px;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
 
-/* Verminderde animatie: geen schaalbeweging, kleurwissel blijft als signaal. */
-html.reduced-motion .circle,
-html.reduced-motion .circle-btn {
-  transition: border-color 0.4s ease;
+@keyframes ring-progress {
+  from {
+    stroke-dashoffset: 703.717;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
 }
 
-html.reduced-motion .circle.inhale,
-html.reduced-motion .circle.hold,
-html.reduced-motion .circle.exhale {
-  transform: none;
+/* Verminderde animatie: ringen statisch, progress-ring stapt zonder overgang. */
+html.reduced-motion .breath-rings {
+  transition: none;
+  transform: scale(0.85);
+}
+
+html.reduced-motion .breath-progress {
+  animation: none !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .circle,
-  .circle-btn {
-    transition: border-color 0.4s ease;
+  .breath-rings {
+    transition: none;
+    transform: scale(0.85);
   }
 
-  .circle.inhale,
-  .circle.hold,
-  .circle.exhale {
-    transform: none;
+  .breath-progress {
+    animation: none !important;
+    stroke-dashoffset: 703.717;
   }
 }
 
@@ -261,8 +396,8 @@ html.reduced-motion .circle.exhale {
   min-height: 56px;
   margin: 12px auto;
   padding: 16px;
-  background: #fff;
-  color: #000;
+  background: var(--text);
+  color: var(--bg);
   border: none;
   border-radius: 8px;
   font-size: 1rem;
@@ -278,21 +413,36 @@ html.reduced-motion .circle.exhale {
 }
 
 .btn.danger {
-  background: #d32f2f;
+  background: var(--sos);
   color: #fff;
 }
 
 .btn.secondary {
-  background: #222;
-  color: #fff;
-  border: 1px solid #333;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+}
+
+.link {
+  background: none;
+  border: none;
+  color: var(--accent);
+  font-size: 0.875rem;
+  font-weight: 600;
+  padding: 10px 0;
+  min-height: 44px;
+  cursor: pointer;
+}
+
+.link.danger-link {
+  color: #ff8a80;
 }
 
 .selector-label {
   display: block;
   max-width: 320px;
   margin: 0 auto 6px;
-  color: #888;
+  color: var(--muted);
   font-size: 0.8125rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -306,9 +456,9 @@ html.reduced-motion .circle.exhale {
   display: block;
   min-height: 48px;
   padding: 12px;
-  background: #1a1a1a;
-  color: #fff;
-  border: 1px solid #333;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
   border-radius: 8px;
   font-size: 0.9375rem;
 }
@@ -317,41 +467,174 @@ html.reduced-motion .circle.exhale {
   margin-bottom: 24px;
 }
 
+.textarea {
+  resize: vertical;
+  line-height: 1.4;
+  margin-bottom: 4px;
+}
+
 .field-row {
   display: flex;
   flex-direction: column;
   gap: 8px;
   max-width: 320px;
-  margin: 0 auto;
 }
 
 .field-row .btn {
   margin: 0;
 }
 
-/* --- Meer ----------------------------------------------------------- */
+/* --- Kaarten (Meer, Dagboek) ---------------------------------------- */
 
 .card-grid {
   display: grid;
   grid-template-columns: 1fr;
   gap: 12px;
-  margin-top: 20px;
+  margin-top: 12px;
 }
 
 .card {
-  background: #141414;
-  border: 1px solid #222;
+  background: var(--card);
+  border: 1px solid var(--line);
   border-radius: 8px;
   padding: 16px;
   text-align: left;
-  color: #fff;
+  color: var(--text);
   font-size: 1rem;
+}
+
+.card-action {
+  width: 100%;
+  cursor: pointer;
+  border-left: 4px solid var(--accent);
+}
+
+.card-action:active {
+  background: #182b45;
+}
+
+.card-muted {
+  opacity: 0.7;
 }
 
 .card-desc {
   font-size: 0.8125rem;
-  color: #999;
+  color: var(--muted);
   margin-top: 4px;
+  line-height: 1.4;
+}
+
+/* --- Grounding ------------------------------------------------------ */
+
+.step-card {
+  text-align: center;
+  padding: 16px 0;
+}
+
+.step-progress {
+  color: var(--muted);
+  font-size: 0.875rem;
+  margin-bottom: 8px;
+}
+
+.step-count {
+  width: 140px;
+  height: 140px;
+  margin: 12px auto 20px;
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3.5rem;
+  font-weight: 600;
+}
+
+.step-prompt {
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 8px;
+}
+
+.step-card .btn {
+  margin-top: 20px;
+}
+
+.step-card .btn + .btn {
+  margin-top: 0;
+}
+
+/* --- Dagboek -------------------------------------------------------- */
+
+.mood-row {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.mood {
+  min-height: 64px;
+  padding: 8px 2px;
+  background: var(--card);
+  color: var(--text);
+  border: 1px solid var(--line-strong);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  cursor: pointer;
+}
+
+.mood.selected {
+  border-color: var(--accent);
+  background: #1b3457;
+}
+
+.mood-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.mood-label {
+  font-size: 0.6875rem;
+  color: var(--muted);
+  text-align: center;
+  line-height: 1.1;
+}
+
+.entry-list {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+
+.entry-head {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 6px;
+}
+
+.entry-mood {
+  font-weight: 600;
+}
+
+.entry-date {
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+
+.entry-note {
+  white-space: pre-wrap;
+  line-height: 1.45;
+  font-size: 0.9375rem;
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 /* --- Instellingen --------------------------------------------------- */
@@ -362,7 +645,7 @@ html.reduced-motion .circle.exhale {
 
 .section-group h3 {
   font-size: 0.875rem;
-  color: #888;
+  color: var(--muted);
   margin-bottom: 12px;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -372,24 +655,21 @@ html.reduced-motion .circle.exhale {
   margin-left: 0;
 }
 
-.section-group .hint {
-  text-align: left;
-}
-
 .checkbox-label {
   display: flex;
   align-items: center;
   gap: 12px;
   min-height: 48px;
   padding: 10px 0;
-  color: #ddd;
+  color: var(--text);
   font-size: 0.9375rem;
   cursor: pointer;
+  line-height: 1.3;
 }
 
 .checkbox-label input {
   width: 22px;
   height: 22px;
-  accent-color: #64b5f6;
+  accent-color: var(--accent);
   flex-shrink: 0;
 }

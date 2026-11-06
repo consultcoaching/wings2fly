@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import { toTelHref } from '../lib/storage';
 
 /* Noodscherm. Belknoppen zijn echte <a href="tel:"> zodat ze zonder JS-state
- * en zonder netwerk werken. Escape sluit het scherm. */
+ * en zonder netwerk werken. Escape sluit het scherm. Geen netwerkverkeer. */
 export default function Crisis({ onClose, onDirectBreathe, onOpenSettings, emergencyContact }) {
   const contactHref = toTelHref(emergencyContact);
   const firstActionRef = useRef(null);
@@ -28,7 +28,7 @@ export default function Crisis({ onClose, onDirectBreathe, onOpenSettings, emerg
       </h2>
 
       <a href="tel:112" className="btn danger" ref={firstActionRef}>
-        Bel 112 (spoed)
+        Bel 112
       </a>
       <a href="tel:1813" className="btn danger">
         Bel 1813 (Zelfmoordlijn)

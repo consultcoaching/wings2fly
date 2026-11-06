@@ -2,11 +2,13 @@ import { useCallback, useState } from 'react';
 import Start from './screens/Start';
 import Adem from './screens/Adem';
 import Meer from './screens/Meer';
+import Grounding from './screens/Grounding';
+import Dagboek from './screens/Dagboek';
 import Instellingen from './screens/Instellingen';
+import Privacy from './screens/Privacy';
 import Crisis from './screens/Crisis';
-import { useSettings } from './hooks/useSettings';
-import { useStoredState } from './hooks/useStoredState';
-import { KEYS, clearAll } from './lib/storage';
+import { useLocalData } from './hooks/useLocalData';
+import { useOnline } from './hooks/useOnline';
 
 const TABS = [
   { id: 'start', label: 'Start' },
@@ -17,16 +19,26 @@ const TABS = [
 
 export default function App() {
   const [tab, setTab] = useState('start');
+  const [subScreen, setSubScreen] = useState(null); // 'grounding' | 'dagboek' | 'privacy'
   const [showCrisis, setShowCrisis] = useState(false);
   const [ademAutoStart, setAdemAutoStart] = useState(false);
-  const { settings, setSetting, resetSettings } = useSettings();
-  const [emergencyContact, setEmergencyContact, resetEmergencyContact] = useStoredState(
-    KEYS.contact,
-    ''
-  );
+  const [ademProtocol, setAdemProtocol] = useState(null);
+  const online = useOnline();
+  const {
+    data,
+    settings,
+    setSetting,
+    addSession,
+    addJournalEntry,
+    removeJournalEntry,
+    clearAll,
+    saveFailed,
+  } = useLocalData();
 
   const selectTab = useCallback((next) => {
     setAdemAutoStart(false);
+    setAdemProtocol(null);
+    setSubScreen(null);
     setTab(next);
   }, []);
 
@@ -34,6 +46,8 @@ export default function App() {
 
   const handleDirectBreathe = useCallback(() => {
     setShowCrisis(false);
+    setSubScreen(null);
+    setAdemProtocol(null);
     setAdemAutoStart(true);
     setTab('adem');
   }, []);
@@ -43,14 +57,67 @@ export default function App() {
     selectTab('instellingen');
   }, [selectTab]);
 
-  const handleClearAll = useCallback(() => {
-    clearAll();
-    resetSettings();
-    resetEmergencyContact();
-  }, [resetSettings, resetEmergencyContact]);
+  const openProtocol = useCallback((key) => {
+    setSubScreen(null);
+    setAdemAutoStart(false);
+    setAdemProtocol(key);
+    setTab('adem');
+  }, []);
+
+  const backToList = useCallback(() => setSubScreen(null), []);
+
+  const persistProtocol = useCallback((key) => setSetting('lastProtocol', key), [setSetting]);
+
+  const renderTab = () => {
+    switch (tab) {
+      case 'start':
+        return <Start onAdem={() => selectTab('adem')} />;
+      case 'adem':
+        return (
+          <Adem
+            settings={settings}
+            autoStart={ademAutoStart}
+            initialProtocol={ademProtocol}
+            onProtocolChange={persistProtocol}
+            onSession={addSession}
+          />
+        );
+      case 'meer':
+        if (subScreen === 'grounding') return <Grounding onBack={backToList} />;
+        if (subScreen === 'dagboek') {
+          return (
+            <Dagboek
+              entries={data.journal}
+              onAdd={addJournalEntry}
+              onRemove={removeJournalEntry}
+              onBack={backToList}
+            />
+          );
+        }
+        return <Meer onProtocol={openProtocol} onOpen={setSubScreen} />;
+      case 'instellingen':
+        if (subScreen === 'privacy') return <Privacy onBack={backToList} />;
+        return (
+          <Instellingen
+            data={data}
+            settings={settings}
+            setSetting={setSetting}
+            onClearAll={clearAll}
+            onOpenPrivacy={() => setSubScreen('privacy')}
+            saveFailed={saveFailed}
+          />
+        );
+      default:
+        return null;
+    }
+  };
 
   return (
     <div className="app">
+      <span className={`badge ${online ? '' : 'offline'}`} role="status">
+        {online ? 'Offline-klaar' : 'Offline'}
+      </span>
+
       {!showCrisis && (
         <button
           type="button"
@@ -67,22 +134,11 @@ export default function App() {
           onClose={closeCrisis}
           onDirectBreathe={handleDirectBreathe}
           onOpenSettings={handleOpenSettings}
-          emergencyContact={emergencyContact}
+          emergencyContact={settings.emergencyContact}
         />
       ) : (
         <>
-          {tab === 'start' && <Start onAdem={() => selectTab('adem')} />}
-          {tab === 'adem' && <Adem settings={settings} autoStart={ademAutoStart} />}
-          {tab === 'meer' && <Meer />}
-          {tab === 'instellingen' && (
-            <Instellingen
-              settings={settings}
-              setSetting={setSetting}
-              emergencyContact={emergencyContact}
-              setEmergencyContact={setEmergencyContact}
-              onClearAll={handleClearAll}
-            />
-          )}
+          {renderTab()}
 
           <nav className="tabs" aria-label="Hoofdnavigatie">
             {TABS.map((item) => (
