@@ -42,12 +42,14 @@ Zoek op `[[` voordat iets live gaat; er mag er geen één overblijven.
 
 ## Beslispunten
 
-1. **Prijzen.** Live: Free, Reset €5/maand, Care €15/maand; het OneDrive-document
-   "LeefNu_Beslissingsdocument_B2C_B2B_Coaching" noemt dat "DEFINITIEF". Het besluit van
-   7 november op de branch is Reset €49 eenmalig voor 12 maanden, zonder maandprijzen; de
-   Mollie-code op de branch controleert op €49,00. De documenten beschrijven beide vormen
-   omdat opzegging en herroeping verschillen. Eén vorm moet eruit, en code, site en documenten
-   moeten dezelfde zeggen. Testpiloten betalen niets (handleiding 26-09).
+1. **Prijzen: beslist.** Reset is €49 per jaar, eenmalig betaald, geen abonnement, geen
+   automatische verlenging (Johnny, 6 november 2026). De documenten, de Mollie-code op de
+   branch (controle op €49,00) en het niveauscherm zeggen nu hetzelfde. Care heeft nog geen
+   prijs en staat als "nog niet beschikbaar". **Nog te doen buiten de documenten**: de live
+   site toont nog €5/maand en €15/maand, en het OneDrive-document
+   "LeefNu_Beslissingsdocument_B2C_B2B_Coaching" noemt die structuur "DEFINITIEF"; beide
+   moeten bijgewerkt worden, anders klopt de site niet met de voorwaarden waarop Mollie toetst.
+   Testpiloten betalen niets (handleiding 26-09).
 2. **Telefoonnummer bij registratie.** Verwerkt volgens het eigenaarsbesluit van 24-09:
    alleen bewaren, doel accountherstel en contact, aparte opt-in, geen sms. "Crisisopvolging"
    staat er bewust niet in: dat vereist eerst een juridische en medische toets. De live app

@@ -20,18 +20,13 @@ De datum waarop je bericht bij ons toekomt, is de opzegdatum.
 
 ## 2. Wanneer je opzegging ingaat
 
-> **Beslispunt** (zie `docs/README.md` punt 1): behoud de alinea die bij de gekozen vorm hoort.
+Reset is een eenmalige betaling van €49 voor 12 maanden. Het is geen abonnement: er is niets
+op te zeggen, de periode stopt vanzelf na 12 maanden en er wordt nooit automatisch verlengd of
+afgeschreven. Je hoeft dus niets te doen om te stoppen.
 
-**Maandabonnement (Reset €5/maand, Care €15/maand).** Je opzegging gaat in aan het einde
-van de lopende maand. Tot dan houd je je niveau. Er wordt niets meer afgeschreven. Een al
-betaalde maand wordt niet terugbetaald, behalve binnen de 14 dagen bedenktijd na je eerste
-bestelling (zie *Herroeping*).
-
-**Eenmalige periode (Reset €49 voor 12 maanden).** Er is niets op te zeggen: de periode stopt
-vanzelf na 12 maanden en verlengt niet automatisch. Wil je eerder stoppen, dan mag dat, maar
-het resterende deel wordt niet terugbetaald, behalve binnen de 14 dagen bedenktijd (zie
-*Herroeping*) of als wij de dienst wezenlijk wijzigen of stopzetten (zie *Algemene
-voorwaarden*, §4.2 en §9).
+Wil je eerder stoppen, dan mag dat altijd. Het resterende deel van het jaar wordt niet
+terugbetaald, behalve binnen de 14 dagen bedenktijd (zie *Herroeping*) of als wij de dienst
+wezenlijk wijzigen of stopzetten (zie *Algemene voorwaarden*, §4.2 en §9).
 
 ## 3. Wat er na opzegging gebeurt
 

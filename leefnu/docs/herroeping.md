@@ -77,9 +77,8 @@ dienst herroep:
 ## 6. Uitzonderingen
 
 Het herroepingsrecht geldt niet voor het gratis niveau (er is geen overeenkomst onder
-bezwarende titel) en niet voor zakelijke klanten. Verlengt een maandabonnement na de eerste
-maand, dan start er geen nieuwe bedenktijd; opzeggen kan dan wel op elk moment (zie
-*Opzegging*).
+bezwarende titel) en niet voor zakelijke klanten. Betaal je na afloop van een jaar opnieuw,
+dan is dat een nieuwe bestelling met een nieuwe bedenktijd van 14 dagen.
 
 ## 7. Geschillen
 

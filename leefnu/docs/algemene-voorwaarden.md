@@ -50,21 +50,18 @@ Prijzen zijn in euro, inclusief btw.
 | Niveau | Prijs | Looptijd |
 |---|---|---|
 | Free | gratis | onbeperkt |
-| Reset | zie §4.1 | zie §4.1 |
-| Care | zie §4.1 | zie §4.1 |
+| Reset | €49 per jaar, eenmalig betaald | 12 maanden, geen automatische verlenging |
+| Care | nog niet beschikbaar | – |
 
-### 4.1 Vorm van het betaalde niveau
+### 4.1 Hoe een betaald niveau werkt
 
-> **Beslispunt** (zie `docs/README.md` punt 1): behoud één van beide alinea's.
+Reset kost €49 en geeft 12 maanden toegang vanaf de dag van betaling. Het is **geen
+abonnement**: er wordt niets automatisch verlengd of afgeschreven. Na 12 maanden val je terug
+op Free, tenzij je opnieuw betaalt. Betaal je vóór het einde opnieuw, dan telt de nieuwe periode
+vanaf de einddatum van de lopende periode, zodat je geen dagen verliest.
 
-**Vorm A, maandabonnement.** Reset kost €5 per maand, Care €15 per maand. Het abonnement
-loopt per maand en wordt telkens met een maand verlengd tot je opzegt. Opzeggen kan op elk
-moment en gaat in aan het einde van de lopende maand (zie *Opzegging*).
-
-**Vorm B, eenmalige periode.** Reset kost €49 eenmalig en geeft 12 maanden toegang vanaf de
-dag van betaling. De periode verlengt **niet** automatisch. Na 12 maanden val je terug op
-Free, tenzij je opnieuw betaalt. Betaal je vóór het einde opnieuw, dan telt de nieuwe periode
-vanaf de einddatum van de lopende periode.
+Care is aangekondigd maar nog niet te bestellen. Prijs en inhoud volgen op de site vóór het
+beschikbaar komt.
 
 ### 4.2 Wat je krijgt
 
@@ -95,9 +92,10 @@ met een modelformulier en de online herroepingsfunctie.
 
 ## 7. Opzegging
 
-Zie *Opzegging* (https://leefnu.app/opzeggen). Kort: een maandabonnement zeg je op elk moment
-op tegen het einde van de lopende maand; een eenmalige periode van 12 maanden stopt vanzelf.
-Opzeggen kan via de app of per e-mail aan johnny.smets@wings2fly.ai en kost niets.
+Zie *Opzegging* (https://leefnu.app/opzeggen). Kort: een betaald jaar stopt vanzelf na 12
+maanden; je hoeft niets op te zeggen en er loopt niets door. Wil je toch eerder stoppen of je
+accountgegevens laten verwijderen, dan kan dat via e-mail aan johnny.smets@wings2fly.ai en kost
+dat niets.
 
 ## 8. Jouw gegevens
 
