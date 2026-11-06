@@ -12,6 +12,8 @@ export const DEFAULT_SETTINGS = {
   emergencyContact: '',
   lastProtocol: null, // laatst gekozen protocol, hersteld bij openen
   lastExportAt: null,
+  niveauToken: null, // JWT (EdDSA) van de server; offline geverifieerd in useNiveau
+  pendingPayment: null, // { paymentId, email, at } tussen checkout en token
 };
 
 const newId = () =>

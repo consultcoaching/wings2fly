@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { downloadJSON, exportLocal, toTelHref } from '../lib/storage';
 import { BACKUP_REMINDER_DAYS } from '../lib/config';
 import { canSpeak, canVibrate } from '../lib/device';
-import { TIERS, currentTier } from '../lib/tiers';
+import { TIERS } from '../lib/tiers';
 
 const CONFIRM_WINDOW_MS = 5000;
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -21,8 +21,18 @@ export default function Instellingen({
   onOpenPrivacy,
   onOpenNiveaus,
   saveFailed,
+  niveau = 'free',
+  niveauTot = null,
 }) {
-  const tier = TIERS[currentTier()];
+  const tier = TIERS[niveau] || TIERS.free;
+  const totTekst = (() => {
+    if (!niveauTot || niveau === 'free') return '';
+    try {
+      return ` tot ${new Intl.DateTimeFormat('nl-BE', { dateStyle: 'long' }).format(new Date(niveauTot))}`;
+    } catch {
+      return '';
+    }
+  })();
   const [draftContact, setDraftContact] = useState(settings.emergencyContact || '');
   const [contactStatus, setContactStatus] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
@@ -84,7 +94,7 @@ export default function Instellingen({
         <h3 id="h-niveau">Niveau</h3>
         <p className="body">
           Je gebruikt <strong style={{ color: tier.kleur }}>{tier.naam}</strong>
-          {tier.prijs ? ` (${tier.prijs})` : ''}.
+          {totTekst}.
         </p>
         <button type="button" className="btn secondary" onClick={onOpenNiveaus}>
           Bekijk niveaus

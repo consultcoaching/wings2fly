@@ -10,6 +10,7 @@ import Niveaus from './screens/Niveaus';
 import Crisis from './screens/Crisis';
 import { useLocalData } from './hooks/useLocalData';
 import { useOnline } from './hooks/useOnline';
+import { useNiveau } from './hooks/useNiveau';
 
 const TABS = [
   { id: 'start', label: 'Start' },
@@ -35,6 +36,7 @@ export default function App() {
     clearAll,
     saveFailed,
   } = useLocalData();
+  const { niveau, tot, terugkeer, haalOp, wisTerugkeer } = useNiveau(settings, setSetting);
 
   const selectTab = useCallback((next) => {
     setAdemAutoStart(false);
@@ -98,11 +100,26 @@ export default function App() {
         return <Meer onProtocol={openProtocol} onOpen={setSubScreen} />;
       case 'instellingen':
         if (subScreen === 'privacy') return <Privacy onBack={backToList} />;
-        if (subScreen === 'niveaus') return <Niveaus onBack={backToList} />;
+        if (subScreen === 'niveaus') {
+          return (
+            <Niveaus
+              onBack={backToList}
+              niveau={niveau}
+              tot={tot}
+              terugkeer={terugkeer}
+              haalOp={haalOp}
+              wisTerugkeer={wisTerugkeer}
+              settings={settings}
+              setSetting={setSetting}
+            />
+          );
+        }
         return (
           <Instellingen
             data={data}
             settings={settings}
+            niveau={niveau}
+            niveauTot={tot}
             setSetting={setSetting}
             onClearAll={clearAll}
             onOpenPrivacy={() => setSubScreen('privacy')}

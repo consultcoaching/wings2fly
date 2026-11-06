@@ -71,9 +71,21 @@ export const FEATURE_LABELS = {
 /** Aantal dagboeknotities dat Free bewaart (oudste vallen af). */
 export const JOURNAL_LIMIT_FREE = 7;
 
-/** Spiegelt Nt() uit de live bundle: altijd free. */
+export function isTierKey(key) {
+  return Object.prototype.hasOwnProperty.call(TIERS, key);
+}
+
+/* Actief niveau. Start op free; de app zet het na offline verificatie van het
+ * niveau-token (useNiveau). Zonder TOKEN_PUBLIC_KEY blijft het altijd free. */
+let actiefNiveau = 'free';
+
 export function currentTier() {
-  return 'free';
+  return actiefNiveau;
+}
+
+export function setCurrentTier(key) {
+  actiefNiveau = isTierKey(key) ? key : 'free';
+  return actiefNiveau;
 }
 
 export function hasFeature(feature, tier = currentTier()) {

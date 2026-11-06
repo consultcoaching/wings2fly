@@ -1,0 +1,40 @@
+# /etc/systemd/system/leefnu-api.service
+# Node-API voor LeefNu (Mollie-betaling, webhook, niveau-token) naast nginx.
+# Code: /opt/leef-nu/server (kopie van leefnu/server uit de repo).
+# Geheimen: /etc/leefnu/api.env (root:leefnu, 640). Database: /var/lib/leefnu.
+#
+# Eenmalig:  useradd --system --home /var/lib/leefnu --shell /usr/sbin/nologin leefnu
+#            install -d -o leefnu -g leefnu -m 750 /var/lib/leefnu
+#            install -d -o root -g leefnu -m 750 /etc/leefnu
+# Daarna:    systemctl daemon-reload && systemctl enable --now leefnu-api
+# Check:     curl -s http://127.0.0.1:8787/api/health
+
+[Unit]
+Description=LeefNu API (Mollie, niveaus)
+After=network.target
+
+[Service]
+Type=simple
+User=leefnu
+Group=leefnu
+WorkingDirectory=/opt/leef-nu/server
+EnvironmentFile=/etc/leefnu/api.env
+ExecStart=/usr/bin/node /opt/leef-nu/server/index.js
+Restart=on-failure
+RestartSec=3
+
+# Verharding: alleen de database-map is schrijfbaar.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/leefnu
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+MemoryDenyWriteExecute=false
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

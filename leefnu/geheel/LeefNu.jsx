@@ -11,11 +11,18 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
 /* ============================== lib/config.js ============================== */
 /* Externe verwijzingen en limieten. Leeg = functie verborgen.
- * Bewust geen defaults: niets wordt verzonnen of stilzwijgend aangeroepen.
- * De app doet in deze versie GEEN netwerkverkeer buiten het laden van zichzelf. */
+ * Bewust geen defaults: niets wordt verzonnen of stilzwijgend aangeroepen. */
 
 /** Volledige privacyverklaring. Leeg: link wordt niet getoond. */
 const PRIVACY_URL = '';
+
+/** Publieke Ed25519-sleutel (hex, 32 bytes) waarmee de app niveau-tokens
+ * offline controleert. Maken met leefnu/server/scripts/maak-sleutels.js.
+ * Leeg: betalen en toegang ophalen zijn verborgen en iedereen is Free. */
+const TOKEN_PUBLIC_KEY = '';
+
+/** Basis van de API (nginx-locatie /api/ → 127.0.0.1:8787). */
+const API_BASE = '/api';
 
 /** Backup-herinnering na dit aantal dagen zonder export (alleen bij opt-in). */
 const BACKUP_REMINDER_DAYS = 30;
@@ -265,9 +272,21 @@ const FEATURE_LABELS = {
 /** Aantal dagboeknotities dat Free bewaart (oudste vallen af). */
 const JOURNAL_LIMIT_FREE = 7;
 
-/** Spiegelt Nt() uit de live bundle: altijd free. */
+function isTierKey(key) {
+  return Object.prototype.hasOwnProperty.call(TIERS, key);
+}
+
+/* Actief niveau. Start op free; de app zet het na offline verificatie van het
+ * niveau-token (useNiveau). Zonder TOKEN_PUBLIC_KEY blijft het altijd free. */
+let actiefNiveau = 'free';
+
 function currentTier() {
-  return 'free';
+  return actiefNiveau;
+}
+
+function setCurrentTier(key) {
+  actiefNiveau = isTierKey(key) ? key : 'free';
+  return actiefNiveau;
 }
 
 function hasFeature(feature, tier = currentTier()) {
@@ -291,6 +310,102 @@ const CRISIS_LINES = [
   { naam: 'Tele-Onthaal · praten over wat je bezighoudt', nr: '106', info: '24/7 · gratis · anoniem' },
 ];
 
+/* ============================== lib/token.js ============================== */
+/* Niveau-token controleren, volledig offline. Het token is een JWT met EdDSA
+ * (Ed25519), getekend door de server; de publieke sleutel zit in config.js.
+ * Resultaat: { niveau, tot, email, pid } of null. Nooit een exception. */
+import { verifyAsync } from '@noble/ed25519';
+
+
+function b64urlToBytes(s) {
+  const b64 = String(s).replace(/-/g, '+').replace(/_/g, '/');
+  const pad = b64.length % 4 ? '='.repeat(4 - (b64.length % 4)) : '';
+  const bin = atob(b64 + pad);
+  const out = new Uint8Array(bin.length);
+  for (let i = 0; i < bin.length; i += 1) out[i] = bin.charCodeAt(i);
+  return out;
+}
+
+function hexToBytes(hex) {
+  const clean = String(hex || '').trim();
+  if (!/^[0-9a-fA-F]{64}$/.test(clean)) return null;
+  const out = new Uint8Array(32);
+  for (let i = 0; i < 32; i += 1) out[i] = parseInt(clean.slice(i * 2, i * 2 + 2), 16);
+  return out;
+}
+
+const utf8 = (s) => new TextEncoder().encode(s);
+const decodeJSON = (b64url) => JSON.parse(new TextDecoder().decode(b64urlToBytes(b64url)));
+
+function tokenIngeschakeld() {
+  return Boolean(hexToBytes(TOKEN_PUBLIC_KEY));
+}
+
+/** Verifieert handtekening en vervaldatum. Geen sleutel in config = altijd null. */
+export async function verifieerToken(token, nu = Date.now()) {
+  try {
+    const pub = hexToBytes(TOKEN_PUBLIC_KEY);
+    if (!pub || typeof token !== 'string') return null;
+    const delen = token.split('.');
+    if (delen.length !== 3) return null;
+    const [h, p, s] = delen;
+    const header = decodeJSON(h);
+    if (header.alg !== 'EdDSA') return null;
+    const ok = await verifyAsync(b64urlToBytes(s), utf8(`${h}.${p}`), pub);
+    if (!ok) return null;
+    const payload = decodeJSON(p);
+    if (!payload.exp || payload.exp * 1000 <= nu) return null;
+    if (!isTierKey(payload.niveau)) return null;
+    return { niveau: payload.niveau, tot: payload.tot, email: payload.sub, pid: payload.pid };
+  } catch {
+    return null;
+  }
+}
+
+/* ============================== lib/api.js ============================== */
+/* De enige netwerkaanroepen van de app, allemaal buiten het crisispad en
+ * alleen op uitdrukkelijke actie van de gebruiker (betalen, toegang ophalen). */
+
+async function call(pad, opties = {}) {
+  const res = await fetch(`${API_BASE}${pad}`, {
+    ...opties,
+    headers: { 'Content-Type': 'application/json', ...(opties.headers || {}) },
+  });
+  let json = null;
+  try {
+    json = await res.json();
+  } catch {
+    json = null;
+  }
+  return { status: res.status, json };
+}
+
+/** Start een betaling. Geeft { checkoutUrl, paymentId } of gooit een Error met
+ * een boodschap die aan de gebruiker getoond mag worden. */
+export async function startBetaling(email) {
+  const { status, json } = await call('/betaling', {
+    method: 'POST',
+    body: JSON.stringify({ email }),
+  });
+  if (status === 200 && json && json.checkoutUrl && json.paymentId) return json;
+  if (status === 429) throw new Error('Te veel pogingen. Probeer over tien minuten opnieuw.');
+  if (status === 400) throw new Error('Controleer je e-mailadres.');
+  throw new Error('Betaling starten lukt nu niet. Probeer later opnieuw.');
+}
+
+/** Haalt het token op na betaling.
+ * Resultaat: { status: 'ok', token, niveau, tot } | { status: 'wacht' } |
+ * { status: 'fout', bericht }. */
+export async function haalToken(paymentId, email) {
+  const qs = new URLSearchParams({ payment: paymentId, email });
+  const { status, json } = await call(`/token?${qs}`);
+  if (status === 200 && json && json.token) return { status: 'ok', ...json };
+  if (status === 202) return { status: 'wacht' };
+  if (status === 404) return { status: 'fout', bericht: 'Geen betaling gevonden voor dit e-mailadres en betaal-ID.' };
+  if (status === 410) return { status: 'fout', bericht: 'Dit niveau is verlopen.' };
+  return { status: 'fout', bericht: 'Ophalen lukt nu niet. Probeer later opnieuw.' };
+}
+
 /* ============================== hooks/useLocalData.js ============================== */
 const DEFAULT_SETTINGS = {
   largeText: false,
@@ -301,6 +416,8 @@ const DEFAULT_SETTINGS = {
   emergencyContact: '',
   lastProtocol: null, // laatst gekozen protocol, hersteld bij openen
   lastExportAt: null,
+  niveauToken: null, // JWT (EdDSA) van de server; offline geverifieerd in useNiveau
+  pendingPayment: null, // { paymentId, email, at } tussen checkout en token
 };
 
 const newId = () =>
@@ -401,6 +518,70 @@ function useOnline() {
   }, []);
 
   return online;
+}
+
+/* ============================== hooks/useNiveau.js ============================== */
+/* Bepaalt het actieve niveau uit het lokaal bewaarde token (offline) en
+ * handelt de terugkeer van Mollie af (?betaald=1 + openstaande betaling).
+ * Alles hier is buiten het crisispad: fouten leiden hoogstens tot 'free'. */
+function useNiveau(settings, setSetting) {
+  const [niveau, setNiveau] = useState('free');
+  const [tot, setTot] = useState(null);
+  const [terugkeer, setTerugkeer] = useState(null); // null | 'wacht' | 'ok' | { fout }
+
+  // 1. Token verifiëren bij laden en bij wijziging.
+  useEffect(() => {
+    let actief = true;
+    (async () => {
+      const info = settings.niveauToken ? await verifieerToken(settings.niveauToken) : null;
+      if (!actief) return;
+      const key = setCurrentTier(info ? info.niveau : 'free');
+      setNiveau(key);
+      setTot(info ? info.tot : null);
+    })();
+    return () => {
+      actief = false;
+    };
+  }, [settings.niveauToken]);
+
+  // 2. Token ophalen voor een openstaande betaling (na redirect of via herstelknop).
+  const haalOp = useCallback(
+    async (paymentId, email) => {
+      setTerugkeer('wacht');
+      const r = await haalToken(paymentId, email);
+      if (r.status === 'ok') {
+        const info = await verifieerToken(r.token);
+        if (!info) {
+          setTerugkeer({ fout: 'Het ontvangen token is ongeldig. Neem contact op.' });
+          return;
+        }
+        setSetting('niveauToken', r.token);
+        setSetting('pendingPayment', null);
+        setTerugkeer('ok');
+        return;
+      }
+      if (r.status === 'wacht') {
+        setTerugkeer('wacht');
+        return;
+      }
+      setTerugkeer({ fout: r.bericht });
+    },
+    [setSetting]
+  );
+
+  // 3. Terug van Mollie: URL opschonen en meteen proberen.
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const url = new URL(window.location.href);
+    if (!url.searchParams.has('betaald')) return;
+    url.searchParams.delete('betaald');
+    window.history.replaceState(null, '', url.pathname + (url.search || '') + url.hash);
+    const p = settings.pendingPayment;
+    if (p && p.paymentId && p.email) haalOp(p.paymentId, p.email);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  return { niveau, tot, terugkeer, haalOp, wisTerugkeer: () => setTerugkeer(null) };
 }
 
 /* ============================== hooks/useBreathing.js ============================== */
@@ -1056,10 +1237,70 @@ function Privacy({ onBack }) {
 }
 
 /* ============================== screens/Niveaus.jsx ============================== */
-/* Overzicht Free / Reset / Care. Alleen weergave: betaalde niveaus zijn nog
- * niet activeerbaar en tonen "Binnenkort", zoals in de live bundle. */
-function Niveaus({ onBack }) {
-  const current = currentTier();
+import { flushSync } from 'react-dom';
+
+
+
+const BETAALD_NIVEAU = 'reset';
+const geldigEmail = (e) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+const geldigPaymentId = (p) => /^tr_[A-Za-z0-9]{6,32}$/.test(p);
+
+const formatDatum = (iso) => {
+  try {
+    return new Intl.DateTimeFormat('nl-BE', { dateStyle: 'long' }).format(new Date(iso));
+  } catch {
+    return iso;
+  }
+};
+
+/* Overzicht Free / Reset / Care. Met TOKEN_PUBLIC_KEY in config: Reset is te
+ * kopen (e-mail → Mollie-checkout → terug met ?betaald=1 → token) en er is een
+ * herstelknop voor wie de redirect miste. Zonder sleutel: alleen weergave. */
+function Niveaus({ onBack, niveau, tot, terugkeer, haalOp, wisTerugkeer, settings, setSetting }) {
+  const actief = tokenIngeschakeld();
+  const [toonKoop, setToonKoop] = useState(false);
+  const [email, setEmail] = useState(settings.pendingPayment?.email || '');
+  const [akkoord, setAkkoord] = useState(false);
+  const [bezig, setBezig] = useState(false);
+  const [fout, setFout] = useState('');
+  const [toonHerstel, setToonHerstel] = useState(false);
+  const [herstelEmail, setHerstelEmail] = useState('');
+  const [herstelId, setHerstelId] = useState('');
+  const [herstelFout, setHerstelFout] = useState('');
+
+  const betalen = async (event) => {
+    event.preventDefault();
+    const e = email.trim().toLowerCase();
+    if (!geldigEmail(e)) return setFout('Controleer je e-mailadres.');
+    if (!akkoord) return setFout('Vink eerst aan dat je akkoord gaat.');
+    setFout('');
+    setBezig(true);
+    try {
+      const { checkoutUrl, paymentId } = await startBetaling(e);
+      // Synchroon wegschrijven vóór we de pagina verlaten, anders is de
+      // openstaande betaling weg wanneer Mollie ons terugstuurt.
+      flushSync(() => setSetting('pendingPayment', { paymentId, email: e, at: new Date().toISOString() }));
+      window.location.assign(checkoutUrl);
+    } catch (err) {
+      setFout(err.message || 'Er ging iets mis.');
+      setBezig(false);
+    }
+  };
+
+  const herstellen = async (event) => {
+    event.preventDefault();
+    const e = herstelEmail.trim().toLowerCase();
+    const p = herstelId.trim();
+    if (!geldigEmail(e)) return setHerstelFout('Controleer je e-mailadres.');
+    if (!geldigPaymentId(p)) return setHerstelFout('Een betaal-ID ziet eruit als tr_ gevolgd by letters en cijfers.');
+    setHerstelFout('');
+    await haalOp(p, e);
+  };
+
+  const opnieuw = () => {
+    const p = settings.pendingPayment;
+    if (p && p.paymentId && p.email) haalOp(p.paymentId, p.email);
+  };
 
   return (
     <main className="niveaus">
@@ -1068,13 +1309,40 @@ function Niveaus({ onBack }) {
       </button>
       <h2 className="screen-title">Niveaus</h2>
       <p className="hint left">
-        Noodhulp, ademhaling en grounding zijn altijd gratis. Betaalde niveaus komen later.
+        Noodhulp, ademhaling en grounding zijn altijd gratis.
+        {!actief && ' Betaalde niveaus komen later.'}
       </p>
+
+      {terugkeer === 'wacht' && (
+        <div className="notice" role="status">
+          Je betaling wordt verwerkt. Bij een overschrijving kan dat enkele dagen duren.
+          <button type="button" className="link" onClick={opnieuw}>
+            Opnieuw controleren
+          </button>
+        </div>
+      )}
+      {terugkeer === 'ok' && (
+        <div className="notice" role="status">
+          Gelukt: {TIERS[niveau]?.naam || 'je niveau'} is actief{tot ? ` tot ${formatDatum(tot)}` : ''}.
+          <button type="button" className="link" onClick={wisTerugkeer}>
+            Sluiten
+          </button>
+        </div>
+      )}
+      {terugkeer && terugkeer.fout && (
+        <div className="notice warn" role="alert">
+          {terugkeer.fout}
+          <button type="button" className="link" onClick={wisTerugkeer}>
+            Sluiten
+          </button>
+        </div>
+      )}
 
       <div className="card-grid">
         {TIER_ORDER.map((id) => {
           const tier = TIERS[id];
-          const isCurrent = id === current;
+          const isCurrent = id === niveau;
+          const koopbaar = actief && id === BETAALD_NIVEAU && !isCurrent;
           return (
             <article
               key={id}
@@ -1091,13 +1359,103 @@ function Niveaus({ onBack }) {
                   <li key={label}>{label}</li>
                 ))}
               </ul>
-              <span className={`tag ${isCurrent ? 'tag-current' : ''}`}>
-                {isCurrent ? 'Huidig niveau' : 'Binnenkort'}
-              </span>
+              {isCurrent ? (
+                <span className="tag tag-current">
+                  Huidig niveau{id !== 'free' && tot ? ` · tot ${formatDatum(tot)}` : ''}
+                </span>
+              ) : koopbaar ? (
+                <button type="button" className="btn" onClick={() => setToonKoop((v) => !v)} aria-expanded={toonKoop}>
+                  {tier.naam} nemen · {tier.prijs}
+                </button>
+              ) : (
+                <span className="tag">Binnenkort</span>
+              )}
+
+              {koopbaar && toonKoop && (
+                <form onSubmit={betalen} className="field-row koop">
+                  <label htmlFor="koop-email" className="selector-label">
+                    Je e-mailadres (voor je toegang en de bevestiging)
+                  </label>
+                  <input
+                    id="koop-email"
+                    type="email"
+                    inputMode="email"
+                    autoComplete="email"
+                    className="field"
+                    value={email}
+                    onChange={(ev) => setEmail(ev.target.value)}
+                    required
+                  />
+                  <label className="checkbox-label">
+                    <input type="checkbox" checked={akkoord} onChange={(ev) => setAkkoord(ev.target.checked)} />
+                    Ik ga akkoord met de algemene voorwaarden en heb het herroepingsbeleid gelezen.
+                  </label>
+                  <button type="submit" className="btn" disabled={bezig}>
+                    {bezig ? 'Even geduld…' : 'Betalen via Mollie'}
+                  </button>
+                  {fout && (
+                    <p className="hint left" role="alert">
+                      {fout}
+                    </p>
+                  )}
+                  <p className="hint left">
+                    Je gaat naar de beveiligde betaalpagina van Mollie en komt daarna terug in de app.
+                  </p>
+                </form>
+              )}
             </article>
           );
         })}
       </div>
+
+      {actief && (
+        <section className="section-group herstel">
+          <h3>Al betaald, maar geen toegang?</h3>
+          <p className="hint left">
+            Bijvoorbeeld na het wissen van je browsergegevens of op een ander toestel. Vul je
+            e-mailadres en het betaal-ID in. Vind je het ID niet terug, mail ons dan.
+          </p>
+          {!toonHerstel ? (
+            <button type="button" className="btn secondary" onClick={() => setToonHerstel(true)}>
+              Toegang herstellen
+            </button>
+          ) : (
+            <form onSubmit={herstellen} className="field-row">
+              <label htmlFor="herstel-email" className="sr-only">
+                E-mailadres
+              </label>
+              <input
+                id="herstel-email"
+                type="email"
+                className="field"
+                placeholder="E-mailadres"
+                value={herstelEmail}
+                onChange={(ev) => setHerstelEmail(ev.target.value)}
+              />
+              <label htmlFor="herstel-id" className="sr-only">
+                Betaal-ID
+              </label>
+              <input
+                id="herstel-id"
+                type="text"
+                className="field"
+                placeholder="Betaal-ID (tr_…)"
+                autoCapitalize="none"
+                value={herstelId}
+                onChange={(ev) => setHerstelId(ev.target.value)}
+              />
+              <button type="submit" className="btn secondary">
+                Ophalen
+              </button>
+              {herstelFout && (
+                <p className="hint left" role="alert">
+                  {herstelFout}
+                </p>
+              )}
+            </form>
+          )}
+        </section>
+      )}
     </main>
   );
 }
@@ -1120,8 +1478,18 @@ function Instellingen({
   onOpenPrivacy,
   onOpenNiveaus,
   saveFailed,
+  niveau = 'free',
+  niveauTot = null,
 }) {
-  const tier = TIERS[currentTier()];
+  const tier = TIERS[niveau] || TIERS.free;
+  const totTekst = (() => {
+    if (!niveauTot || niveau === 'free') return '';
+    try {
+      return ` tot ${new Intl.DateTimeFormat('nl-BE', { dateStyle: 'long' }).format(new Date(niveauTot))}`;
+    } catch {
+      return '';
+    }
+  })();
   const [draftContact, setDraftContact] = useState(settings.emergencyContact || '');
   const [contactStatus, setContactStatus] = useState('');
   const [confirmClear, setConfirmClear] = useState(false);
@@ -1183,7 +1551,7 @@ function Instellingen({
         <h3 id="h-niveau">Niveau</h3>
         <p className="body">
           Je gebruikt <strong style={{ color: tier.kleur }}>{tier.naam}</strong>
-          {tier.prijs ? ` (${tier.prijs})` : ''}.
+          {totTekst}.
         </p>
         <button type="button" className="btn secondary" onClick={onOpenNiveaus}>
           Bekijk niveaus
@@ -1330,6 +1698,7 @@ export default function App() {
     clearAll,
     saveFailed,
   } = useLocalData();
+  const { niveau, tot, terugkeer, haalOp, wisTerugkeer } = useNiveau(settings, setSetting);
 
   const selectTab = useCallback((next) => {
     setAdemAutoStart(false);
@@ -1393,11 +1762,26 @@ export default function App() {
         return <Meer onProtocol={openProtocol} onOpen={setSubScreen} />;
       case 'instellingen':
         if (subScreen === 'privacy') return <Privacy onBack={backToList} />;
-        if (subScreen === 'niveaus') return <Niveaus onBack={backToList} />;
+        if (subScreen === 'niveaus') {
+          return (
+            <Niveaus
+              onBack={backToList}
+              niveau={niveau}
+              tot={tot}
+              terugkeer={terugkeer}
+              haalOp={haalOp}
+              wisTerugkeer={wisTerugkeer}
+              settings={settings}
+              setSetting={setSetting}
+            />
+          );
+        }
         return (
           <Instellingen
             data={data}
             settings={settings}
+            niveau={niveau}
+            niveauTot={tot}
             setSetting={setSetting}
             onClearAll={clearAll}
             onOpenPrivacy={() => setSubScreen('privacy')}
@@ -1763,6 +2147,26 @@ main,
 .tag-current {
   background: var(--accent);
   color: var(--bg);
+}
+
+.tier .btn {
+  margin: 4px 0 0;
+  max-width: none;
+}
+
+.koop {
+  margin-top: 12px;
+  max-width: none;
+}
+
+.herstel {
+  margin-top: 28px;
+}
+
+.notice .link {
+  display: block;
+  padding: 6px 0 0;
+  min-height: 0;
 }
 
 .crisis-close {

@@ -42,22 +42,28 @@ leefnu/
     └── test/webhook.test.js     9 tests met nagemaakte Mollie-API: npm test
 ```
 
-## Server (Mollie)
+## Server (Mollie) en niveau-token
 
-`leefnu/server/` bevat losse modules; er is nog geen HTTP-server, systemd-unit of
-nginx-locatie die ze draait, en nog geen token-afgifte naar de app. De webhook werkt
-met `node:sqlite` (Node ≥ 22.5) of anders `better-sqlite3` (native build nodig).
+Zie `server/README.md` voor de API, de flow en de uitrolstappen. Kort:
+
+- `server/index.js`: HTTP-server (betaling, webhook, token, health), `deploy/` bevat de
+  systemd-unit, een env-voorbeeld en de nginx-locatie. Niets daarvan is uitgerold.
+- Token: JWT met EdDSA (Ed25519). Server tekent met `LEEFNU_TOKEN_PRIVATE_KEY`; de app
+  controleert offline met `TOKEN_PUBLIC_KEY` in `src/lib/config.js` (via `@noble/ed25519`).
+  Zonder publieke sleutel blijft iedereen Free en is betalen verborgen.
+- `currentTier()` in `src/lib/tiers.js` volgt het geverifieerde token (`useNiveau`).
+  Het crisispad kijkt er nooit naar.
+- Webhook-invariant: een `payment_id` wordt hoogstens één keer op `paid` verwerkt, geclaimd
+  met één voorwaardelijke `UPDATE`. Een tweede betaling verlengt vanaf de bestaande einddatum.
 
 ```
-cd leefnu/server
-npm test          # 9 tests, geen netwerk, dummy-sleutel
+cd leefnu/server && npm test     # 25 tests, geen netwerk
 ```
 
-Invariant van de webhook: een `payment_id` wordt hoogstens één keer op `paid` verwerkt.
-Niet "al gezien": Mollie stuurt `open`/`pending` vóór `paid` en probeert opnieuw na een
-fout. De overgang naar `paid` wordt geclaimd met één voorwaardelijke `UPDATE`, zodat twee
-gelijktijdige webhooks niet allebei het niveau zetten. Een tweede betaling verlengt vanaf
-de bestaande einddatum.
+Geverifieerd in de browser (Playwright, echte API met nagemaakte Mollie, 18 controles):
+kopen → terug met `?betaald=1` → 202 zolang open → webhook `paid` → token → Reset actief,
+offline na herladen, dagboeklimiet weg, vervalst token valt terug op Free, herstel met
+e-mail + betaal-ID, verkeerde e-mail geeft niets prijs.
 
 ## Ontwikkelen en bouwen
 
@@ -91,7 +97,7 @@ en `start_url`/`scope` in `public/manifest.webmanifest`.
 | §7 backup-herinnering (opt-in) | gedaan: na 30 dagen zonder export, alleen zichtbaar in Instellingen |
 | §8 PWA | gedaan |
 | §9 logo | **open**: tijdelijk SVG volgens omschrijving |
-| §10 toegangscontrole Free/Reset/Care | structuur uit live bundle in `lib/tiers.js`; Reset €49 eenmalig voor 12 maanden, Care zonder prijs (besluit 2026-11-07); `currentTier()` is altijd `free`, niveauscherm toont Reset/Care als "Binnenkort". Echte controle (Ed25519-token via Mollie-redirect) **nog te koppelen** zodra `leefnu/server/` in de repo staat |
+| §10 toegangscontrole Free/Reset/Care | gebouwd: Mollie-betaling, webhook, Ed25519-token, offline verificatie, koop- en herstelflow in het niveauscherm. Actief zodra `TOKEN_PUBLIC_KEY` is ingevuld en de API draait; tot dan Free met "Binnenkort". Care heeft nog geen prijs en is niet koopbaar |
 | §2 anonimiseringssignaal naar server bij verwijderen | **niet gebouwd**, zie onder |
 
 ## Open punten (beslissing of input nodig)
@@ -102,10 +108,9 @@ en `start_url`/`scope` in `public/manifest.webmanifest`.
    icons is een gevuld vlak van 512×512 nodig; de transparante variant kan daarnaast als
    favicon dienen.
 3. **Privacyverklaring**: vul `PRIVACY_URL` in `src/lib/config.js`.
-4. **Toegangscontrole**: de niveaus en features staan in `lib/tiers.js`, maar `currentTier()`
-   geeft altijd `free` (zoals `Nt()` in de live bundle). Activeren vereist een server die
-   betaling koppelt aan een token; een puur lokale controle is triviaal te omzeilen.
-   Crisis, adem, grounding en spraak zitten in Free en blijven dus altijd beschikbaar.
+4. **Toegangscontrole**: gebouwd en getest, maar niet uitgerold. Nodig: sleutelpaar maken,
+   API op de server, nginx-locatie, publieke sleutel in `config.js`. Zie `server/README.md`.
+   Crisis, adem, grounding en spraak zitten in Free en blijven altijd beschikbaar.
 5. **Export is in alle niveaus beschikbaar**, hoewel de live bundle `export` pas bij Reset
    zet. Reden: spec §2 belooft export als privacyrecht, en zonder export kan een Free-gebruiker
    zijn dagboek niet bewaren voordat de limiet van 7 het overschrijft. Bewuste afwijking;

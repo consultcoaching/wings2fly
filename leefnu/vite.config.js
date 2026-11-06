@@ -7,7 +7,8 @@ export default defineConfig({
   plugins: [react()],
   base: '/',
   build: {
-    target: 'es2019',
+    // es2020: @noble/ed25519 gebruikt BigInt (Safari 14+, Chrome 67+, Firefox 68+).
+    target: 'es2020',
     sourcemap: false,
   },
 });

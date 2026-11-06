@@ -87,6 +87,12 @@ async function webhook(req, res) {
     } catch {
       check = null;
     }
+    if (check && check.status === 404) {
+      // Mollie kent deze id niet: onderscheiden van een storing, zodat de
+      // token-aanvraag "niet gevonden" kan zeggen i.p.v. "in behandeling".
+      db.prepare("UPDATE webhook_log SET status = 'onbekend' WHERE payment_id = ? AND status != 'paid'").run(id);
+      return res.status(404).send("onbekende betaling");
+    }
     if (!check || !check.ok) {
       db.prepare("UPDATE webhook_log SET status = 'mollie_fout' WHERE payment_id = ? AND status != 'paid'").run(id);
       return res.status(502).send("mollie niet bereikbaar");

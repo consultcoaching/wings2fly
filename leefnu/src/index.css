@@ -303,6 +303,26 @@ main,
   color: var(--bg);
 }
 
+.tier .btn {
+  margin: 4px 0 0;
+  max-width: none;
+}
+
+.koop {
+  margin-top: 12px;
+  max-width: none;
+}
+
+.herstel {
+  margin-top: 28px;
+}
+
+.notice .link {
+  display: block;
+  padding: 6px 0 0;
+  min-height: 0;
+}
+
 .crisis-close {
   margin-top: 24px;
 }

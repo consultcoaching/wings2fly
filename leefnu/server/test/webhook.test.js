@@ -165,6 +165,14 @@ test("verkeerd bedrag of valuta zet geen niveau en blijft herhaalbaar", async ()
   assert.equal(lees("SELECT status FROM webhook_log WHERE payment_id = ?", "tr_7")[0].status, "bedrag_fout");
 });
 
+test("Mollie kent de id niet: 404 en status 'onbekend', later herhaalbaar", async () => {
+  antwoorden.push({ status: 404, body: { status: 404 } }, paid("tr_7b"));
+  const res = await roep("tr_7b");
+  assert.equal(res.code, 404);
+  assert.equal(lees("SELECT status FROM webhook_log WHERE payment_id = ?", "tr_7b")[0].status, "onbekend");
+  assert.equal((await roep("tr_7b")).tekst, "ok");
+});
+
 test("paid zonder e-mail in metadata: 400, geen niveau", async () => {
   antwoorden.push(paid("tr_8", { metadata: {} }));
   const res = await roep("tr_8");
