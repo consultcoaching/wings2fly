@@ -102,7 +102,7 @@ Voor inloggen gebruikt de site een technisch noodzakelijke sessiecookie of een l
 ## 9. Kinderen
 
 Het gratis niveau mag je gebruiken vanaf 13 jaar. Voor een betaald niveau moet je minstens
-[[LEEFTIJD]] jaar zijn. Wij verzamelen niet bewust gegevens van jongere kinderen; merken we
+18 jaar zijn. Wij verzamelen niet bewust gegevens van jongere kinderen; merken we
 dat toch, dan verwijderen we ze.
 
 ## 10. Wijzigingen

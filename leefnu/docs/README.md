@@ -17,7 +17,9 @@ controle door een jurist en publicatie op de site.
 
 | Gegeven | Waarde | Bron |
 |---|---|---|
-| Exploitant | Johnny Smets, eenmanszaak, handelend als Consult Coaching / Wings2Fly.AI | KBO (naam "Smets, Johnny", natuurlijk persoon); handelsnaam uit eigen offertes en annulatieclausules 06-10-2026. **Dat LeefNu onder deze eenmanszaak valt, is een logische lezing; laat Johnny het bevestigen.** |
+| Exploitant | Johnny Smets, eenmanszaak, handelend als Wings2Fly.AI | KBO (naam "Smets, Johnny", natuurlijk persoon); **bevestigd door Johnny op 6 november 2026** ("eenmanszaak") |
+| Minimumleeftijd betaalde plannen | 18 | besluit Johnny, 6 november 2026 |
+| Telefoonnummer op de pagina's | niet gepubliceerd | besluit Johnny, 6 november 2026 ("neen"); e-mail volstaat wettelijk |
 | Ondernemingsnummer | 0534.767.334 | KBO, actief sinds 05-12-2018 |
 | Btw | BE 0534.767.334, btw-plichtig | KBO (onderworpen sinds 05-12-2018); consumentenprijzen dus incl. 21 % btw |
 | Adres | Commandant Leroystraat 27, 3950 Bocholt | factuur W2F-008 (04-11-2025), offerte 08-10-2026, Academy-privacybeleid 21-09-2026 |
@@ -27,16 +29,13 @@ controle door een jurist en publicatie op de site.
 
 | Veld | Opmerking |
 |---|---|
-| `[[TELEFOON]]` | **KEUZE**: +32 484 24 44 18 staat publiek in het KBO; wettelijk volstaat e-mail. Niet publiceren = regel schrappen. |
 | `[[HOSTINGLOCATIE]]` | land van het Hetzner-datacenter van 178.105.122.1 (Duitsland of Finland); te lezen in het Hetzner-paneel |
 | `[[MAILDIENST]]` | wie verstuurt de inlogcodes (OTP-mails)? Niet gevonden. Die dienst is een verwerker en hoort in privacy §4. |
 | `[[BEWAARTERMIJN]]` | dagen na einde niveau tot verwijdering accountgegevens; voorstel 30 |
-| `[[LEEFTIJD]]` | minimumleeftijd betaalde plannen; nergens vastgelegd, voorstel 18 |
 | `[[DATUM]]` | ingangsdatum |
 
-Let op: johnny.smets@wings2fly.ai is een Wings2Fly-adres op LeefNu-pagina's. Dat is toegestaan
-zolang de exploitant (§1 voorwaarden) dezelfde eenmanszaak is; het bevestigt wel het beeld
-dat LeefNu onder Wings2Fly.AI valt. Verandert dat later, dan ook dit adres.
+Alle KEUZE-punten zijn beslist. Wat rest zijn feiten die nog opgezocht moeten worden
+(hostinglocatie, maildienst) en twee getallen (bewaartermijn, datum).
 
 Zoek op `[[` voordat iets live gaat; er mag er geen één overblijven.
 

@@ -4,9 +4,9 @@ Versie 0.1 (concept) · ingangsdatum [[DATUM]]
 
 ## 1. Wie wij zijn
 
-LeefNu wordt aangeboden door Johnny Smets (eenmanszaak, handelend als Consult Coaching / Wings2Fly.AI), met zetel te Commandant Leroystraat 27, 3950 Bocholt, België,
+LeefNu wordt aangeboden door Johnny Smets (eenmanszaak, handelend als Wings2Fly.AI), met zetel te Commandant Leroystraat 27, 3950 Bocholt, België,
 ondernemingsnummer 0534.767.334, btw-nummer BE 0534.767.334.
-Contact: johnny.smets@wings2fly.ai · [[TELEFOON]] · https://leefnu.app
+Contact: johnny.smets@wings2fly.ai · https://leefnu.app
 
 In deze voorwaarden: "wij" is Johnny Smets, "je" is de gebruiker, "de app" is LeefNu op
 https://leefnu.app en als geïnstalleerde web-app (PWA).
@@ -34,7 +34,7 @@ Wij kunnen niet zien of je in nood bent en nemen geen contact met je op.
 
 - Het gratis niveau (Free) is te gebruiken zonder betaling. Voor betaalde niveaus maak je
   een account aan met je e-mailadres. Inloggen gebeurt met een code die we per e-mail sturen.
-- Je bent minstens [[LEEFTIJD]] jaar oud om een betaald niveau af te nemen. Onder die leeftijd
+- Je bent minstens 18 jaar oud om een betaald niveau af te nemen. Onder die leeftijd
   mag je het gratis niveau gebruiken.
 - Je houdt je e-mailadres en inlogcodes voor jezelf. Een inlogcode is persoonlijk en
   kort geldig.
