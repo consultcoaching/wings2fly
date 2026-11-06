@@ -1,0 +1,15 @@
+{
+  "name": "leefnu-server",
+  "private": true,
+  "version": "0.1.0",
+  "description": "LeefNu: Mollie-betaling en webhook (niveaus). Draait naast nginx op leefnu.app.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "optionalDependencies": {
+    "better-sqlite3": "^11.7.0"
+  }
+}

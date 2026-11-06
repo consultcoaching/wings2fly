@@ -33,8 +33,31 @@ leefnu/
 │   └── screens/                 Start, Adem, Meer, Grounding, Dagboek,
 │                                Instellingen, Privacy, Niveaus, Crisis
 ├── scripts/build-geheel.mjs     genereert geheel/LeefNu.jsx uit src/
-└── geheel/LeefNu.jsx            GEGENEREERD, niet met de hand bewerken
+├── geheel/LeefNu.jsx            GEGENEREERD, niet met de hand bewerken
+└── server/                      Node-modules voor Mollie (nog geen draaiend proces)
+    ├── mollie-betaling.js       eenmalige betaling €49,00 voor Reset
+    ├── mollie-webhook.js        status ophalen, idempotent op 'paid', zet niveau
+    ├── niveaus.sql              SQLite-schema (niveaus, webhook_log)
+    ├── piper-stub.js            niet actief
+    └── test/webhook.test.js     9 tests met nagemaakte Mollie-API: npm test
 ```
+
+## Server (Mollie)
+
+`leefnu/server/` bevat losse modules; er is nog geen HTTP-server, systemd-unit of
+nginx-locatie die ze draait, en nog geen token-afgifte naar de app. De webhook werkt
+met `node:sqlite` (Node ≥ 22.5) of anders `better-sqlite3` (native build nodig).
+
+```
+cd leefnu/server
+npm test          # 9 tests, geen netwerk, dummy-sleutel
+```
+
+Invariant van de webhook: een `payment_id` wordt hoogstens één keer op `paid` verwerkt.
+Niet "al gezien": Mollie stuurt `open`/`pending` vóór `paid` en probeert opnieuw na een
+fout. De overgang naar `paid` wordt geclaimd met één voorwaardelijke `UPDATE`, zodat twee
+gelijktijdige webhooks niet allebei het niveau zetten. Een tweede betaling verlengt vanaf
+de bestaande einddatum.
 
 ## Ontwikkelen en bouwen
 
