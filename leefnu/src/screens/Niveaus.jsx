@@ -28,7 +28,7 @@ export default function Niveaus({ onBack }) {
             >
               <div className="tier-head">
                 <strong className="tier-name">{tier.naam}</strong>
-                <span className="tier-price">{tier.prijs}</span>
+                {tier.prijs && <span className="tier-price">{tier.prijs}</span>}
               </div>
               <ul className="tier-features">
                 {FEATURE_LABELS[id].map((label) => (

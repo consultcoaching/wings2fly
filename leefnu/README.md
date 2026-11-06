@@ -68,7 +68,7 @@ en `start_url`/`scope` in `public/manifest.webmanifest`.
 | §7 backup-herinnering (opt-in) | gedaan: na 30 dagen zonder export, alleen zichtbaar in Instellingen |
 | §8 PWA | gedaan |
 | §9 logo | **open**: tijdelijk SVG volgens omschrijving |
-| §10 toegangscontrole Free/Reset/Care | structuur uit live bundle in `lib/tiers.js`; `currentTier()` is altijd `free`, niveauscherm toont Reset/Care als "Binnenkort". Echte controle (server-token) **niet gebouwd**, zie onder |
+| §10 toegangscontrole Free/Reset/Care | structuur uit live bundle in `lib/tiers.js`; Reset €49 eenmalig voor 12 maanden, Care zonder prijs (besluit 2026-11-07); `currentTier()` is altijd `free`, niveauscherm toont Reset/Care als "Binnenkort". Echte controle (Ed25519-token via Mollie-redirect) **nog te koppelen** zodra `leefnu/server/` in de repo staat |
 | §2 anonimiseringssignaal naar server bij verwijderen | **niet gebouwd**, zie onder |
 
 ## Open punten (beslissing of input nodig)

@@ -83,7 +83,8 @@ export default function Instellingen({
       <section className="section-group" aria-labelledby="h-niveau">
         <h3 id="h-niveau">Niveau</h3>
         <p className="body">
-          Je gebruikt <strong style={{ color: tier.kleur }}>{tier.naam}</strong> ({tier.prijs}).
+          Je gebruikt <strong style={{ color: tier.kleur }}>{tier.naam}</strong>
+          {tier.prijs ? ` (${tier.prijs})` : ''}.
         </p>
         <button type="button" className="btn secondary" onClick={onOpenNiveaus}>
           Bekijk niveaus

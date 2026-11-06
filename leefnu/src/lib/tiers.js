@@ -1,4 +1,6 @@
 /* Niveaus en features, overgenomen uit de live bundle (JSON van 2026-11-06).
+ * Prijzen volgens besluit 2026-11-07: Reset is €49 eenmalig voor 12 maanden;
+ * maandprijzen zijn van het scherm; Care heeft nog geen prijs (leeg = niet tonen).
  * Runtime: currentTier() geeft altijd 'free' terug; betaalde niveaus tonen
  * "Binnenkort". Een echte controle vereist een server-gekoppeld token.
  * Gating hier is dus alleen functioneel voor Free-limieten, nooit beveiliging. */
@@ -14,7 +16,7 @@ export const TIERS = {
   reset: {
     id: 'reset',
     naam: 'Reset',
-    prijs: '€5/maand',
+    prijs: '€49 eenmalig · 12 maanden',
     kleur: '#C8B87A',
     features: [
       'basis', 'adem', 'grounding', 'crisis', 'spraak', 'dagboek_7', 'acties_3', 'training_starter',
@@ -24,7 +26,7 @@ export const TIERS = {
   care: {
     id: 'care',
     naam: 'Care',
-    prijs: '€15/maand',
+    prijs: '',
     kleur: '#B07BD4',
     features: [
       'basis', 'adem', 'grounding', 'crisis', 'spraak', 'dagboek_7', 'acties_3', 'training_starter',
